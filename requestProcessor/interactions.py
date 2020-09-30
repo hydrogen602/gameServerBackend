@@ -4,6 +4,12 @@ from typing import Optional
 from requests.models import Response
 
 class UnprocessedClientRequest:
+    '''
+    `UnprocessedClientRequest` represents a
+    request by the client to the server while
+    already in a game. If the client would like
+    to join a game, use `JoinGameClientRequest`
+    '''
 
     JOIN_GAME = 'JOIN_GAME_REQUEST'
 
@@ -24,6 +30,10 @@ class UnprocessedClientRequest:
 
 
 class JoinGameClientRequest(UnprocessedClientRequest):
+    '''
+    JoinGameClientRequest should be sent if the player's
+    request is to join a game
+    '''
 
     def __init__(self, playerID: Optional[str], gameId: str):
         super().__init__(playerID=playerID, request=self.JOIN_GAME)
@@ -54,6 +64,10 @@ class Response:
 
 
 class ResponseSuccess(Response):
+    '''
+    Represents if a request was successful. It
+    can specify data to send to the client.
+    '''
     
     def __init__(self, data: Optional[str] = None):
         self.data = data 
@@ -65,6 +79,10 @@ class ResponseSuccess(Response):
 
 
 class ResponseFailure(Response):
+    '''
+    Represents if a request failed. It
+    can specify an error message to send to the client.
+    '''
 
     def __init__(self, errMsg: str):
         super.__init__()

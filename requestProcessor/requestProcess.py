@@ -1,14 +1,19 @@
 from __future__ import annotations
 from requestProcessor.errors import ActionError
 from . import interactions
-from .dataTypes import DummyDB, DummyDB2, Player, PlayerManager, GameManager
+from .dataTypes import Player, PlayerManager, GameManager
 
-
-# playerDatabase: PlayerManager = DummyDB()
-
-# gameDatabase: GameManager = DummyDB2()
 
 class RequestProcessor:
+    '''
+    RequestProcessor takes a request that is
+    either of type `interactions.JoinGameClientRequest` or
+    `interactions.UnprocessedClientRequest` and checks
+    if the player has a valid id assigned already and otherwise
+    assigns a new one. The idea is that it guarantees that every
+    player has an id and that both the game exists and the player's
+    request is send to the right game
+    '''
 
     def __init__(self, playerDatabase: PlayerManager, gameDatabase: GameManager) -> None:
         self.playerDatabase = playerDatabase
@@ -56,6 +61,7 @@ class RequestProcessor:
                 #interactions.ResponseFailure('Unknown Error')
 
     def process(self, r: interactions.UnprocessedClientRequest) -> interactions.Response:
+        assert isinstance(r, interactions.UnprocessedClientRequest)
 
         if r.playerID is None:
             # new player id

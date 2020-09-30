@@ -35,4 +35,8 @@ class AbstractGame:
     
     @abstractmethod
     def handleRequest(self, playerData: Player, request: str) -> interactions.Response:
+        '''
+        Called when a player makes a request or action. The string `request`
+        is unmodified from what was received.
+        '''
         return NotImplemented

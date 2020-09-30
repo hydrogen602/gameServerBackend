@@ -9,6 +9,7 @@ class Player:
     '''
     The Player superclass. Subclass
     this for additional functionality.
+    It should keep all data regarding a player
     '''
 
     def __init__(self):
@@ -23,13 +24,15 @@ class Player:
         return self.__gameID
     
     def setGameID(self, id: Optional[str]):
-        '''
-        
-        '''
         self.__gameID = id
 
 
 class PlayerManager(ABC):
+    '''
+    PlayerManager is an interface between
+    the request processor and any possible
+    storage system for the player data.
+    '''
 
     @abstractmethod
     def addPlayer(self) -> Tuple[str, Player]:
@@ -41,6 +44,11 @@ class PlayerManager(ABC):
 
 
 class GameManager(ABC):
+    '''
+    GameManager is an interface between
+    the request processor and any possible
+    storage system for the player data.
+    '''
 
     @abstractmethod
     def getGame(self, id: str) -> Optional[AbstractGame]:
