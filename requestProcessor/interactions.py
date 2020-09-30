@@ -5,6 +5,8 @@ from requests.models import Response
 
 class UnprocessedClientRequest:
 
+    JOIN_GAME = 'JOIN_GAME_REQUEST'
+
     def __init__(self, playerID: Optional[str], request: Optional[str]):
         self.__playerID: Optional[str] = playerID
         self.__request: Optional[str] = request
@@ -19,6 +21,17 @@ class UnprocessedClientRequest:
     
     def setPlayerID(self, pID: str):
         self.__playerID = pID
+
+
+class JoinGameClientRequest(UnprocessedClientRequest):
+
+    def __init__(self, playerID: Optional[str], gameId: str):
+        super().__init__(playerID=playerID, request=self.JOIN_GAME)
+        self.__gameID: str = gameId
+    
+    @property
+    def gameID(self) -> str:
+        return self.__gameID
 
 
 class Response:

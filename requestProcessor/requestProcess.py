@@ -1,15 +1,15 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING, Tuple
-if TYPE_CHECKING:
-    from . import interactions
+from . import interactions
+from .game import AbstractGame    
+from .dataTypes import DummyDB, DummyDB2, Player
 
-class DummyDB:
-    def addPlayer(self) -> Tuple[str, object]: return NotImplemented
-    def getPlayer(self, id: str) -> Optional[object]: return NotImplemented
 
 playerDatabase = DummyDB()
 
-def process(r: interactions.UnprocessedClientRequest):
+gameDatabase = DummyDB2()
+
+def process(r: interactions.UnprocessedClientRequest) -> interactions.Response:
 
     if r.playerID is None:
         # new player id
@@ -21,4 +21,20 @@ def process(r: interactions.UnprocessedClientRequest):
             return interactions.ResponseFailure('Player not found in database')
     
     # now we get r.playerID and playerData
+
+    if isinstance(r, interactions.JoinGameClientRequest):
+        game = gameDatabase.getGame(r.gameID)
+        gameID = r.gameID
+        # is game joinable? - not started & exists
+        # if so, join
+        if game is None:
+            return interactions.ResponseFailure('Game not found in database')
+        elif game.hasGameStarted:
+            return interactions.ResponseFailure('Game has already started')
+        
+        game.joinPlayer(playerData)
+        interactions.ResponseSuccess()
+    else:
+        gameID = playerData.getGameID()
+        # todo
         
