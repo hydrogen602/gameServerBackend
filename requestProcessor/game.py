@@ -27,7 +27,7 @@ class AbstractGame:
         self._hasGameStarted = True
 
     @abstractmethod
-    def joinPlayer(self, playerData: Player):
+    def joinPlayer(self, playerData: Player) -> interactions.Response:
         '''
         Called when a player wants to join a Game.
         '''

@@ -41,6 +41,7 @@ class Response:
             raise TypeError('"Response" is only for subclassing and should not be instantiated')
 
         self.errorMsg: Optional[str] = None
+        self.data: Optional[str] = None
 
     def __init_subclass__(cls):
         if cls.isValid is Response.isValid:
@@ -54,7 +55,8 @@ class Response:
 
 class ResponseSuccess(Response):
     
-    def __init__(self):
+    def __init__(self, data: Optional[str] = None):
+        self.data = data 
         super.__init__()
     
     @property

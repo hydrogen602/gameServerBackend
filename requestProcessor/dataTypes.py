@@ -5,6 +5,7 @@ if TYPE_CHECKING:
 
 class DummyPlayer:
     def getGameID(self) -> Optional[str]: return NotImplemented
+    def setGameID(self, id: str): return NotImplemented
 
 class DummyDB:
     def addPlayer(self) -> Tuple[str, DummyPlayer]: return NotImplemented
