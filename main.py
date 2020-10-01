@@ -1,6 +1,6 @@
 
 print('Hello world!')
 
-import requestProcessor.interactions as interactions
+import gameServerBackend
 
-print(interactions.ResponseSuccess().isValid)
+gameServerBackend

@@ -1,4 +1,4 @@
-import abc
+from __future__ import annotations
 from abc import abstractmethod, ABC
 from typing import Dict, Optional, TYPE_CHECKING, Union
 from secrets import token_urlsafe

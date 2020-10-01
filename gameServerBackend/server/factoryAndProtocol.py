@@ -1,23 +1,23 @@
 from __future__ import annotations
 from gameServerBackend.requestProcessor.interactions import Response
 from ..requestProcessor import interactions
-from .tokenStorage import BasicTokenStorage, TokenStorage
+from .tokenStorage import TokenStorage
 
 import json
 from typing import Callable, Dict, List, Optional, Union
 
 from autobahn.twisted.websocket import WebSocketServerProtocol, WebSocketServerFactory # type: ignore
-from autobahn.websocket.protocol import ConnectingRequest, ConnectionDeny # type: ignore
+from autobahn.websocket.protocol import ConnectingRequest # type: ignore
 from twisted.python import log # type: ignore
 
 
-class ServerProtocol(WebSocketServerProtocol):
+class _ServerProtocol(WebSocketServerProtocol):
     '''
     Sending a message of 'Hi' returns two messages, 'Hello' and a json
     that is {'token': token}
     '''
 
-    factory: ServerFactory
+    factory: _ServerFactory
 
     @property
     def token(self) -> Optional[str]:
@@ -91,12 +91,12 @@ class ServerProtocol(WebSocketServerProtocol):
         return super().sendMessage(payload, isBinary=isBinary, fragmentSize=fragmentSize, sync=sync, doNotCompress=doNotCompress)
 
 
-class ServerFactory(WebSocketServerFactory):
+class _ServerFactory(WebSocketServerFactory):
     '''
     Keeps track of all connections and relays data to other clients
     '''
 
-    def __init__(self, url: str, f, serverCallback: Callable[[interactions.UnprocessedClientRequest], interactions.Response], tokenDataStorage: TokenStorage = BasicTokenStorage()):
+    def __init__(self, url: str, f, serverCallback: Callable[[interactions.UnprocessedClientRequest], interactions.Response], tokenDataStorage: TokenStorage):
         '''
         Initializes the class
         Args:
@@ -113,7 +113,7 @@ class ServerFactory(WebSocketServerFactory):
         self.serverCallback = serverCallback
 
         self.__tokenDataStorage: TokenStorage = tokenDataStorage
-        self.__connection: Dict[str, ServerProtocol] = {}
+        self.__connection: Dict[str, _ServerProtocol] = {}
 
         WebSocketServerFactory.__init__(self, url)
     
@@ -123,7 +123,7 @@ class ServerFactory(WebSocketServerFactory):
         '''
         self.broadcastToAll(self.g.getAsJson())
     
-    def getToken(self, client: ServerProtocol) -> str:
+    def getToken(self, client: _ServerProtocol) -> str:
         t = client.token
         if t is None:
             raise RuntimeError('client has not yet registered. This error should not occur ever')
@@ -135,7 +135,7 @@ class ServerFactory(WebSocketServerFactory):
     #         client.sendMessage(msg.encode())
     #     client.sendMessage(self.g.getAsJson()) # latest state of the board
     
-    def onMessage(self, msg: str, client: ServerProtocol):
+    def onMessage(self, msg: str, client: _ServerProtocol):
         playerID: Optional[str] = self.getToken(client)
         if playerID is None:
             raise RuntimeError('client not in token database. This error should not occur ever')
@@ -143,7 +143,7 @@ class ServerFactory(WebSocketServerFactory):
         request = interactions.UnprocessedClientRequest(playerID=playerID, request=msg)
         self.__handleResponse(self.serverCallback(request))
 
-    def register(self, client: ServerProtocol, clientTypeRequest: str) -> Optional[str]:
+    def register(self, client: _ServerProtocol, clientTypeRequest: str) -> Optional[str]:
         '''
         Called by any new connecting client to address
         whether they are a new player or a reconnecting one.
@@ -218,7 +218,7 @@ class ServerFactory(WebSocketServerFactory):
             errMsg = json.dumps({'ResponseFailure': res.errorMsg})
             self.broadcastToPlayer(errMsg, res.sender.getPlayerName)
 
-    def deregister(self, client: ServerProtocol):
+    def deregister(self, client: _ServerProtocol):
         token = client.token
         if token is None:
             log.msg("Player disconnected before assigned token:", token)

@@ -18,41 +18,35 @@ import re
 from twisted.python import log, logfile # type: ignore
 from twisted.internet import reactor, ssl # type: ignore
 
-from .factoryAndProtocol import ServerFactory, ServerProtocol
+from .factoryAndProtocol import _ServerFactory, _ServerProtocol
+from .tokenStorage import TokenStorage, BasicTokenStorage
 from ..requestProcessor import interactions
-
-
-data = None
-try:
-    f = open('config.json')
-    data = f.read()
-    f.close()
-except FileNotFoundError as e:
-    print('Could not find config file:', e)
-    raise
-
-config = json.loads(data)
-
-USE_SSL: bool = config['USE_SSL']
-assert isinstance(USE_SSL, bool)
 
 
 class Server:
 
-    def __init__(self, ip: str, port: int, callbackFunc: Callable[[interactions.UnprocessedClientRequest], interactions.Response]):
+    def __init__(self, ip: str, port: int, 
+            callbackFunc: Callable[[interactions.UnprocessedClientRequest], interactions.Response], 
+            playerTokenStorage: TokenStorage = BasicTokenStorage(),
+            config: Optional[Dict[str, object]] = None
+            ):
         '''
         A class for managing the code for running the server.
         To setup the server, run `s = Server()`,
         and then run `s.run()` to start it.
 
         Requires keyword argument `callbackFunc` which should
-        be of type `Callable[[str, dict], str]`. This is
+        be of type `Callable[[interactions.UnprocessedClientRequest],
+        interactions.Response]`. This is
         for handling incoming messages and should return
-        a status update to all clients. The return type
-        should be type `str` and be json. The
-        arguments are a unique id for each player as a `str`
-        and the message from that player as a `dict`
+        a status update to clients.
         '''
+
+        if config is None:
+            config = self.__getConfig()
+
+        USE_SSL: bool = config['USE_SSL']
+        assert isinstance(USE_SSL, bool)
 
         regex = r'([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})|localhost'
 
@@ -78,13 +72,14 @@ class Server:
             self.contextFactory = ssl.DefaultOpenSSLContextFactory(key, cert)
 
         # Setup server factory
-        self.server = ServerFactory(
+        self.server = _ServerFactory(
             u'{}://{}:{}'.format(protocol, ip, port), 
             self.logFile, 
-            serverCallback=self.callback
+            serverCallback=self.callback,
+            tokenDataStorage=playerTokenStorage
             )
 
-        self.server.protocol = ServerProtocol
+        self.server.protocol = _ServerProtocol
 
         print(f'WebSocket server on {self.ip}:{self.port}')
 
@@ -93,6 +88,19 @@ class Server:
         else:
             # setup listening server
             reactor.listenTCP(self.port, self.server) # pylint: disable=no-member
+
+    @staticmethod
+    def __getConfig() -> Dict[str, object]:
+        data = None
+        try:
+            f = open('config.json')
+            data = f.read()
+            f.close()
+        except FileNotFoundError as e:
+            print('Could not find config file: {e}. Either provide a config.json or pass it in')
+            raise
+
+        return json.loads(data)
 
     def callback(self, re: interactions.UnprocessedClientRequest) -> interactions.Response:
         '''
@@ -120,6 +128,7 @@ class Server:
             self.logFile.close()
             # if logs are sent to a file instead of stdout
             # the file should be closed here with f.close()
+
 
 def main():
     log.startLogging(sys.stdout, setStdout=True)
