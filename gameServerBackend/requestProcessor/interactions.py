@@ -1,7 +1,9 @@
 from __future__ import annotations
-from typing import Optional
+from os import sendfile
+from typing import Dict, Optional, TYPE_CHECKING
+if TYPE_CHECKING:
+    from gameServerBackend.requestProcessor.dataTypes import Player
 
-from requests.models import Response
 
 class UnprocessedClientRequest:
     '''
@@ -16,15 +18,15 @@ class UnprocessedClientRequest:
     def __init__(self, playerID: Optional[str], request: Optional[str]):
         self.__playerID: Optional[str] = playerID
         self.__request: Optional[str] = request
-    
+
     @property
     def playerID(self) -> Optional[str]:
         return self.__playerID
-    
+
     @property
     def request(self) -> Optional[str]:
         return self.__request
-    
+
     def setPlayerID(self, pID: str):
         self.__playerID = pID
 
@@ -35,23 +37,28 @@ class JoinGameClientRequest(UnprocessedClientRequest):
     request is to join a game
     '''
 
-    def __init__(self, playerID: Optional[str], gameId: str):
+    def __init__(self, playerID: Optional[str], gameId: str, otherData: Optional[str]):
         super().__init__(playerID=playerID, request=self.JOIN_GAME)
         self.__gameID: str = gameId
-    
+        self.__otherData: Optional[str] = otherData
+
     @property
     def gameID(self) -> str:
         return self.__gameID
 
+    @property
+    def otherData(self) -> Optional[str]:
+        return self.__otherData
+
 
 class Response:
 
-    def __init__(self):
+    def __init__(self, sender: Player):
         if type(self) is Response:
             raise TypeError('"Response" is only for subclassing and should not be instantiated')
 
         self.errorMsg: Optional[str] = None
-        self.data: Optional[str] = None
+        self.sender: Player = sender
 
     def __init_subclass__(cls):
         if cls.isValid is Response.isValid:
@@ -69,10 +76,12 @@ class ResponseSuccess(Response):
     can specify data to send to the client.
     '''
     
-    def __init__(self, data: Optional[str] = None):
-        self.data = data 
-        super.__init__()
-    
+    def __init__(self, dataToSender: Optional[str], sender: Player, dataToAll: Optional[str] = None, dataToSome: Optional[Dict[Player, str]] = None):
+        self.dataToSender: Optional[str] = dataToSender
+        self.dataToAll: Optional[str] = dataToAll
+        self.dataToSome: Optional[Dict[Player, str]] = dataToSome
+        super.__init__(sender)
+
     @property
     def isValid(self) -> bool:
         return True
@@ -84,9 +93,9 @@ class ResponseFailure(Response):
     can specify an error message to send to the client.
     '''
 
-    def __init__(self, errMsg: str):
-        super.__init__()
-        self.errorMsg = errMsg
+    def __init__(self, sender: Player, errMsg: str):
+        super.__init__(sender)
+        self.errorMsg: str = errMsg
 
     @property
     def isValid(self) -> bool:

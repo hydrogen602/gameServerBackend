@@ -1,5 +1,5 @@
 from __future__ import annotations
-from requestProcessor.errors import ActionError
+from .errors import ActionError
 from . import interactions
 from .dataTypes import Player, PlayerManager, GameManager
 

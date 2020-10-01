@@ -12,8 +12,9 @@ class Player:
     It should keep all data regarding a player
     '''
 
-    def __init__(self):
+    def __init__(self, playerName: str):
         self.__gameID: Optional[str] = None
+        self.__playerName: str = playerName
 
     def getGameID(self) -> Optional[str]:
         '''
@@ -25,6 +26,9 @@ class Player:
     
     def setGameID(self, id: Optional[str]):
         self.__gameID = id
+    
+    def getPlayerName(self) -> str:
+        return self.__playerName
 
 
 class PlayerManager(ABC):
