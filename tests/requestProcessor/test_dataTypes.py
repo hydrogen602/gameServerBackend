@@ -33,3 +33,41 @@ def test_abc1():
         class TestCls(dataTypes.PlayerManager):
             pass
         TestCls()
+
+def test_basic1():
+    d = dataTypes.BasicPlayerManager()
+
+    assert d.getAllPlayersIDs() == set()
+
+    assert d.getPlayer('player1') is None
+
+    p = d.addPlayer('player1')
+
+    assert d.getAllPlayersIDs() == {p.getPlayerName()}
+    assert d.getPlayer('player1') == p
+
+    with pytest.raises(Exception):
+        d.addPlayer('player1')
+    
+    assert d.getPlayer('player2') is None
+
+def test_basic2():
+    d = dataTypes.BasicGameManager()
+
+    assert d.getAllGameIDs() == set()
+
+    with pytest.raises(Exception):
+        d.removeGame('test')
+    
+    assert d.getGame('test2') is None
+    d.addGame('g1', None)
+
+    assert d.getAllGameIDs() == {'g1'}
+    assert d.getGame('g1') is None
+    
+    with pytest.raises(Exception):
+        d.addGame('g1', None)
+    
+    assert d.removeGame('g1') is None
+    assert d.getAllGameIDs() == set()
+    

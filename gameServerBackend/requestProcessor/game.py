@@ -34,6 +34,14 @@ class AbstractGame:
         return NotImplemented
     
     @abstractmethod
+    def leavePlayer(self, playerData: Player) -> interactions.ResponseSuccess:
+        '''
+        Called when a player exits the game.
+        If the player doesn't exist, ignore.
+        '''
+        return NotImplemented
+    
+    @abstractmethod
     def handleRequest(self, playerData: Player, request: str) -> interactions.Response:
         '''
         Called when a player makes a request or action. The string `request`

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, Optional, Set, Tuple, TYPE_CHECKING
+from typing import Dict, Optional, Set, TYPE_CHECKING
 from abc import ABC, abstractmethod
 if TYPE_CHECKING:
     from .game import AbstractGame
@@ -12,6 +12,14 @@ class Player:
     It should keep all data regarding a player
     '''
     __namesUsed: Set[str] = set()
+
+    @classmethod
+    def _testClearNamesUsed(cls):
+        '''
+        Internal function to help with unit testing.
+        Do not use in actual code
+        '''
+        cls.__namesUsed.clear()
 
     def __init__(self, playerName: str):
         self.__gameID: Optional[str] = None
@@ -61,6 +69,10 @@ class PlayerManager(ABC):
     @abstractmethod
     def getPlayer(self, id: str) -> Optional[Player]:
         return NotImplemented
+    
+    @abstractmethod
+    def getAllPlayersIDs(self) -> Set[str]:
+        return NotImplemented
 
 
 class GameManager(ABC):
@@ -72,6 +84,18 @@ class GameManager(ABC):
 
     @abstractmethod
     def getGame(self, id: str) -> Optional[AbstractGame]:
+        return NotImplemented
+    
+    @abstractmethod
+    def addGame(self, id: str, game: AbstractGame):
+        return NotImplemented
+    
+    @abstractmethod
+    def removeGame(self, id: str) -> AbstractGame:
+        return NotImplemented
+    
+    @abstractmethod
+    def getAllGameIDs(self) -> Set[str]:
         return NotImplemented
 
 
@@ -88,6 +112,9 @@ class BasicPlayerManager(PlayerManager):
     def getPlayer(self, id: str) -> Optional[Player]:
         return self.__data.get(id)
     
+    def getAllPlayersIDs(self) -> Set[str]:
+        return set(self.__data.keys())
+    
     def __len__(self) -> int:
         return len(self.__data)
 
@@ -99,6 +126,18 @@ class BasicGameManager(GameManager):
     def getGame(self, id: str) -> Optional[AbstractGame]:
         return self.__data.get(id)
     
+    def addGame(self, gameID: str, game: AbstractGame):
+        if gameID in self.__data:
+            raise ValueError('game already exists')
+        self.__data[gameID] = game
+    
+    def removeGame(self, gameID: str) -> AbstractGame:
+        if gameID not in self.__data:
+            raise KeyError('GameID not found')
+        return self.__data.pop(gameID)
+    
+    def getAllGameIDs(self) -> Set[str]:
+        return set(self.__data.keys())
+        
     def __len__(self) -> int:
         return len(self.__data)
-
