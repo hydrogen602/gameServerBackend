@@ -1,5 +1,4 @@
 from __future__ import annotations
-from os import sendfile
 from typing import Dict, Optional, TYPE_CHECKING
 if TYPE_CHECKING:
     from gameServerBackend.requestProcessor.dataTypes import Player
@@ -15,20 +14,18 @@ class UnprocessedClientRequest:
 
     JOIN_GAME = 'JOIN_GAME_REQUEST'
 
-    def __init__(self, playerID: Optional[str], request: Optional[str]):
-        self.__playerID: Optional[str] = playerID
+    def __init__(self, playerID: str, request: Optional[str]):
+        assert playerID is not None
+        self.__playerID: str = playerID
         self.__request: Optional[str] = request
 
     @property
-    def playerID(self) -> Optional[str]:
+    def playerID(self) -> str:
         return self.__playerID
 
     @property
     def request(self) -> Optional[str]:
         return self.__request
-
-    def setPlayerID(self, pID: str):
-        self.__playerID = pID
 
 
 class JoinGameClientRequest(UnprocessedClientRequest):
@@ -37,8 +34,9 @@ class JoinGameClientRequest(UnprocessedClientRequest):
     request is to join a game
     '''
 
-    def __init__(self, playerID: Optional[str], gameId: str, otherData: Optional[str]):
+    def __init__(self, playerID: str, gameId: str, otherData: Optional[str]):
         super().__init__(playerID=playerID, request=self.JOIN_GAME)
+        assert gameId is not None
         self.__gameID: str = gameId
         self.__otherData: Optional[str] = otherData
 
@@ -80,7 +78,7 @@ class ResponseSuccess(Response):
         self.dataToSender: Optional[str] = dataToSender
         self.dataToAll: Optional[str] = dataToAll
         self.dataToSome: Optional[Dict[Player, str]] = dataToSome
-        super.__init__(sender)
+        super().__init__(sender)
 
     @property
     def isValid(self) -> bool:
@@ -94,7 +92,7 @@ class ResponseFailure(Response):
     '''
 
     def __init__(self, sender: Player, errMsg: str):
-        super.__init__(sender)
+        super().__init__(sender)
         self.errorMsg: str = errMsg
 
     @property

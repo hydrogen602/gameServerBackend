@@ -1,6 +1,6 @@
 
 print('Hello world!')
 
-import gameServerBackend
+from gameServerBackend.requestProcessor import errors
 
-gameServerBackend
+errors.ActionError

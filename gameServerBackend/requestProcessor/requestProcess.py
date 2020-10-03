@@ -25,9 +25,9 @@ class RequestProcessor:
         # is game joinable? - not started & exists
         # if so, join
         if game is None:
-            return interactions.ResponseFailure('Game not found in database')
+            return interactions.ResponseFailure(playerData, 'Game not found in database')
         elif game.hasGameStarted:
-            return interactions.ResponseFailure('Game has already started')
+            return interactions.ResponseFailure(playerData, 'Game has already started')
         
         response = game.joinPlayer(playerData)
         playerData.setGameID(r.gameID)
@@ -40,19 +40,22 @@ class RequestProcessor:
     def __regularRequestProcess(self, playerData: Player, r: interactions.UnprocessedClientRequest) -> interactions.Response:
         # standard request
         if r.request is None:
-            return interactions.ResponseFailure('Empty request')
+            return interactions.ResponseFailure(playerData, 'Empty request')
 
         gameID = playerData.getGameID()
+        if gameID is None:
+            return interactions.ResponseFailure(playerData, 'No joined game to send request to')
+
         game = self.gameDatabase.getGame(gameID)
         if game is None:
-            return interactions.ResponseFailure('Game not found in database')
+            return interactions.ResponseFailure(playerData, 'Game not found in database')
         
         try:
             response = game.handleRequest(playerData, r.request)
         except ActionError as e:
-            return interactions.ResponseFailure('ActionError: ' + str(e))
+            return interactions.ResponseFailure(playerData, 'ActionError: ' + str(e))
         except Exception as e:
-            return interactions.ResponseFailure('Unknown Error: ' + repr(e))
+            return interactions.ResponseFailure(playerData, 'Unknown Error: ' + repr(e))
         else:
             if isinstance(response, interactions.Response):
                 return response
@@ -62,15 +65,10 @@ class RequestProcessor:
 
     def process(self, r: interactions.UnprocessedClientRequest) -> interactions.Response:
         assert isinstance(r, interactions.UnprocessedClientRequest)
-
-        if r.playerID is None:
-            # new player id
-            playerID, playerData = self.playerDatabase.addPlayer()
-            r.setPlayerID(playerID)
-        else:
-            playerData = self.playerDatabase.getPlayer(r.playerID)
-            if playerData is None:
-                return interactions.ResponseFailure('Player not found in database')
+        
+        playerData = self.playerDatabase.getPlayer(r.playerID)
+        if playerData is None:
+            playerData = self.playerDatabase.addPlayer(r.playerID)
         
         # now we get r.playerID and playerData
 

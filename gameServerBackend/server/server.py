@@ -45,8 +45,11 @@ class Server:
         if config is None:
             config = self.__getConfig()
 
-        USE_SSL: bool = config['USE_SSL']
-        assert isinstance(USE_SSL, bool)
+
+        tmp = config['USE_SSL']
+        assert isinstance(tmp, bool)
+        USE_SSL: bool = tmp
+        
 
         regex = r'([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})|localhost'
 

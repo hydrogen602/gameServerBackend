@@ -208,15 +208,15 @@ class _ServerFactory(WebSocketServerFactory):
             if res.dataToAll:
                 self.broadcastToAll(res.dataToAll)
             if res.dataToSender:
-                self.broadcastToPlayer(res.dataToSender, res.sender.getPlayerName)
+                self.broadcastToPlayer(res.dataToSender, res.sender.getPlayerName())
             if res.dataToSome:
                 for player, msg in res.dataToSome.items():
-                    self.broadcastToPlayer(msg, playerID=player.getPlayerName)
+                    self.broadcastToPlayer(msg, playerID=player.getPlayerName())
         
         elif isinstance(res, interactions.ResponseFailure):
             log.msg(f"Error: ResponseFailure: {res.errorMsg}")
             errMsg = json.dumps({'ResponseFailure': res.errorMsg})
-            self.broadcastToPlayer(errMsg, res.sender.getPlayerName)
+            self.broadcastToPlayer(errMsg, res.sender.getPlayerName())
 
     def deregister(self, client: _ServerProtocol):
         token = client.token
