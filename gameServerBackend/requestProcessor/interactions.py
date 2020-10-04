@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, Optional, TYPE_CHECKING
+from typing import Dict, List, Optional, TYPE_CHECKING, Tuple
 if TYPE_CHECKING:
     from gameServerBackend.requestProcessor.dataTypes import Player
 
@@ -74,9 +74,9 @@ class ResponseSuccess(Response):
     can specify data to send to the client.
     '''
     
-    def __init__(self, dataToSender: Optional[str], sender: Player, dataToAll: Optional[str] = None, dataToSome: Optional[Dict[Player, str]] = None):
+    def __init__(self, dataToSender: Optional[str], sender: Player, dataToAll: Optional[Tuple[List[Player], str]] = None, dataToSome: Optional[Dict[Player, str]] = None):
         self.dataToSender: Optional[str] = dataToSender
-        self.dataToAll: Optional[str] = dataToAll
+        self.dataToAll: Optional[Tuple[List[Player], str]] = dataToAll
         self.dataToSome: Optional[Dict[Player, str]] = dataToSome
         super().__init__(sender)
 

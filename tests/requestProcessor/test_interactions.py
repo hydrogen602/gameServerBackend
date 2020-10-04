@@ -51,9 +51,9 @@ def test_response2():
     assert x.sender == p
     assert x.isValid
 
-    x2 = interactions.ResponseSuccess('senderData', p, 'toAll', {p2: 'specific'})
+    x2 = interactions.ResponseSuccess('senderData', p, ([p, p2], 'toAll'), {p2: 'specific'})
 
-    assert x2.dataToAll == 'toAll'
+    assert x2.dataToAll == ([p, p2], 'toAll')
     assert x2.dataToSender == 'senderData'
     assert x2.dataToSome == {p2: 'specific'}
     assert x2.errorMsg == None

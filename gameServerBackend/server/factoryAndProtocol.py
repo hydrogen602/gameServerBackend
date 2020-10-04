@@ -202,17 +202,25 @@ class _ServerFactory(WebSocketServerFactory):
         self.__connection[token] = client
 
         return token
-    
+
     def __handleResponse(self, res: Response):
         if isinstance(res, interactions.ResponseSuccess):
             if res.dataToAll:
-                self.broadcastToAll(res.dataToAll)
+                players, data = res.dataToAll
+
+                def requireHelper(x: Optional[str]) -> str:
+                    if x is not None:
+                        return x
+                    raise RuntimeError('player id not found. This shouldnt happen')
+                
+                tokens = [requireHelper(self.__tokenDataStorage.getTokenbyPlayerID(p.getPlayerName())) for p in players]
+                self.broadcastToSome(data, tokens)
             if res.dataToSender:
                 self.broadcastToPlayer(res.dataToSender, res.sender.getPlayerName())
             if res.dataToSome:
                 for player, msg in res.dataToSome.items():
                     self.broadcastToPlayer(msg, playerID=player.getPlayerName())
-        
+
         elif isinstance(res, interactions.ResponseFailure):
             log.msg(f"Error: ResponseFailure: {res.errorMsg}")
             errMsg = json.dumps({'ResponseFailure': res.errorMsg})

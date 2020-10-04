@@ -3,7 +3,6 @@ import pytest
 import os
 import sys
 
-
 sys.path.append(os.path.abspath(os.curdir))
 
 from gameServerBackend.requestProcessor.requestProcess import RequestProcessor
@@ -24,7 +23,7 @@ class HelperGame(AbstractGame):
     def joinPlayer(self, playerData: Player) -> interactions.Response:
         assert playerData not in self._players
         self._players.add(playerData)
-        return interactions.ResponseSuccess('', playerData, f'player joined: "{playerData.getPlayerName()}"', None)
+        return interactions.ResponseSuccess('', playerData, (list(self._players), f'player joined: "{playerData.getPlayerName()}"'), None)
 
     def leavePlayer(self, playerData: Player) -> interactions.ResponseSuccess:
         if playerData in self._players:

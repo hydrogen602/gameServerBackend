@@ -3,7 +3,8 @@ from abc import ABC, abstractmethod
 from .dataTypes import Player
 from . import interactions
 
-class AbstractGame:
+
+class AbstractGame(ABC):
     '''
     Games should derive from AbstractGame.
     It provides a few necessary methods for games to
