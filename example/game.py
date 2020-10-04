@@ -13,20 +13,20 @@ from gameServerBackend.requestProcessor.dataTypes import Player
 
 
 class ChatSystem(game.AbstractGame):
-    
+
     def __init__(self) -> None:
         super().__init__()
         self.__players: Set[Player] = set()
-    
+
     def joinPlayer(self, playerData: Player) -> interactions.Response:
         self.__players.add(playerData)
-        return interactions.ResponseSuccess('Joined successfully', playerData, f'{playerData.getPlayerName()} joined')
-    
+        return interactions.ResponseSuccess('Joined successfully', playerData, (list(self.__players), f'{playerData.getPlayerName()} joined'))
+
     def handleRequest(self, playerData: Player, request: str) -> interactions.Response:
-        return interactions.ResponseSuccess(None, playerData, f'{playerData.getPlayerName()}> {request}')
-    
+        return interactions.ResponseSuccess(None, playerData, (list(self.__players), f'{playerData.getPlayerName()}> {request}'))
+
     def leavePlayer(self, playerData: Player) -> interactions.ResponseSuccess:
         if playerData in self.__players:
             self.__players.remove(playerData)
-            return interactions.ResponseSuccess('You left this group', playerData, f'{playerData.getPlayerName()} left')
+            return interactions.ResponseSuccess('You left this group', playerData, (list(self.__players), f'{playerData.getPlayerName()} left'))
         return interactions.ResponseSuccess('Already left this group', playerData)
