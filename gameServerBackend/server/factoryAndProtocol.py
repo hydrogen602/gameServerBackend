@@ -38,13 +38,11 @@ class _ServerProtocol(WebSocketServerProtocol):
             return False
 
     def onConnect(self, request: ConnectingRequest):
-
-        log.msg(request.path)
         # print(request.headers)
         # print(request.protocols)
 
         # debug information
-        log.msg('Client connecting: {0}'.format(request.peer))
+        log.msg(f'Client connecting: "{request.peer}" with path "{request.path}"')
         self.clientTypeRequest = request.path
 
     def onOpen(self):
@@ -60,7 +58,14 @@ class _ServerProtocol(WebSocketServerProtocol):
         # tell the factory to remember the connection
         self.__token = self.factory.register(self, clientTypeRequest)
 
-        log.msg('WebSocket connection open')
+        if self.__token is None:
+            log.msg('WebSocket connection rejected in register')
+        else:
+            log.msg('WebSocket connection open')
+            
+
+            self.sendMessage(json.dumps({'token': self.__token}))
+        
         self.__isOpen = True
 
     def onClose(self, wasClean, code, reason):
@@ -136,7 +141,11 @@ class _ServerFactory(WebSocketServerFactory):
     #     client.sendMessage(self.g.getAsJson()) # latest state of the board
     
     def onMessage(self, msg: str, client: _ServerProtocol):
-        playerID: Optional[str] = self.getToken(client)
+        token: Optional[str] = self.getToken(client)
+        if token is None:
+            raise RuntimeError('No token assigned to player?')
+
+        playerID = self.__tokenDataStorage.getPlayerIDbyToken(token)
         if playerID is None:
             raise RuntimeError('client not in token database. This error should not occur ever')
 
@@ -160,9 +169,9 @@ class _ServerFactory(WebSocketServerFactory):
         other: Optional[str] = None
 
         if len(clientTypeRequest.strip()) == 0:
-            log.msg('name missing')
+            #log.msg('name missing')
             #client.sendHttpErrorResponse(404, 'Name missing')
-            client.sendClose(code=4000, reason='Name missing')
+            client.sendClose(code=4000, reason='Name missing') # send close reason is logged
             #client.sendClose()
             return None
 
@@ -173,8 +182,8 @@ class _ServerFactory(WebSocketServerFactory):
 
         l = len(tmpLs)
         if l < 3:
-            log.msg('incomplete data')
-            client.sendClose(code=4000, reason='Data missing')
+            #log.msg('incomplete data')
+            client.sendClose(code=4000, reason='Login data incomplete')
             return None
         else:
             gameID = tmpLs[0]
@@ -190,16 +199,34 @@ class _ServerFactory(WebSocketServerFactory):
 
         if name is None or gameID is None:
             raise RuntimeError("Something went wrong in register")
-
+        
         if token is None:
-            token = self.__tokenDataStorage.addPlayerID(playerID=name)
+            tmp2: Optional[str] = self.__tokenDataStorage.getTokenbyPlayerID(name)
+            if tmp2 is not None:
+                client.sendClose(code=4000, reason='Name taken')
+                return None
+        else:
+            result = self.__tokenDataStorage.getPlayerIDbyToken(token)
+            if result is None:
+                client.sendClose(code=4000, reason='Token unknown')
+                return None
+            if result != name:
+                client.sendClose(code=4000, reason='Name taken')
+                return None
+            name = result
 
         request = interactions.JoinGameClientRequest(playerID=name, gameId=gameID, otherData=other)
         
         response = self.serverCallback(request)
-        self.__handleResponse(response)
 
-        self.__connection[token] = client
+        if response.isValid:
+            if token is None:
+                token = self.__tokenDataStorage.addPlayerID(playerID=name)
+            self.__connection[token] = client # __handleResponse depends on __connection
+            self.__handleResponse(response)
+        else:
+            client.sendClose(code=4000, reason=json.dumps({'ResponseFailure': response.errorMsg}))
+            return None
 
         return token
 

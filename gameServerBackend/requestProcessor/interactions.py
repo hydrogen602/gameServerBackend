@@ -72,6 +72,9 @@ class ResponseSuccess(Response):
     '''
     Represents if a request was successful. It
     can specify data to send to the client.
+    Unfortunately, dataToAll needs to be given a list
+    of all players in the game, as the websocket code
+    won't be able to figure it out otherwise
     '''
     
     def __init__(self, dataToSender: Optional[str], sender: Player, dataToAll: Optional[Tuple[List[Player], str]] = None, dataToSome: Optional[Dict[Player, str]] = None):

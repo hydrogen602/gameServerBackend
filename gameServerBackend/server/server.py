@@ -20,13 +20,12 @@ from twisted.internet import reactor, ssl # type: ignore
 
 from .factoryAndProtocol import _ServerFactory, _ServerProtocol
 from .tokenStorage import TokenStorage, BasicTokenStorage
-from ..requestProcessor import interactions
-
+from ..requestProcessor import interactions, RequestProcessor
 
 class Server:
 
     def __init__(self, ip: str, port: int, 
-            callbackFunc: Callable[[interactions.UnprocessedClientRequest], interactions.Response], 
+            requestProcessor: RequestProcessor,
             playerTokenStorage: TokenStorage = BasicTokenStorage(),
             config: Optional[Dict[str, object]] = None
             ):
@@ -40,6 +39,14 @@ class Server:
         interactions.Response]`. This is
         for handling incoming messages and should return
         a status update to clients.
+
+        Config options are:
+        USE_SSL: bool
+        key: str
+        cert: str
+
+
+        key & cert are only needed if USE_SSL==True
         '''
 
         if config is None:
@@ -59,7 +66,7 @@ class Server:
         self.ip: str = ip
         self.port: int = port
 
-        self.__givenCallback: Callable[[interactions.UnprocessedClientRequest], interactions.Response] = callbackFunc
+        self.__requestProcessor: RequestProcessor = requestProcessor
 
         self.logFile = open('gameMsgLog.log', 'w')
 
@@ -109,7 +116,7 @@ class Server:
         '''
         Handles messages from players
         '''
-        return self.__givenCallback(re)
+        return self.__requestProcessor.process(re)
         
 
     def run(self):
@@ -120,6 +127,10 @@ class Server:
         init_msgs are for messages that should be send to the player
         immediately, like the game map for example.
         '''
+        log.startLogging(sys.stdout, setStdout=True)
+
+        logFile = logfile.LogFile.fromFullPath('twistedLog.log')
+        log.addObserver(log.FileLogObserver(logFile).emit)
 
         try:
             # start listening for and handling connections
@@ -131,13 +142,3 @@ class Server:
             self.logFile.close()
             # if logs are sent to a file instead of stdout
             # the file should be closed here with f.close()
-
-
-def main():
-    log.startLogging(sys.stdout, setStdout=True)
-
-    logFile = logfile.LogFile.fromFullPath('twistedLog.log')
-    log.addObserver(log.FileLogObserver(logFile).emit)
-
-    s = Server()
-    s.run()
