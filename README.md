@@ -1,3 +1,4 @@
+![Python application](https://github.com/hydrogen602/gameServerBackend/workflows/Python%20application/badge.svg)
 # gameServerBackend
 A WebSocket based server for web games
 
