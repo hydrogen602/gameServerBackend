@@ -1,5 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+from typing import Optional
 from .dataTypes import Player
 from . import interactions
 
@@ -36,9 +37,10 @@ class AbstractGame(ABC):
         self._hasGameStarted = True
 
     @abstractmethod
-    def joinPlayer(self, playerData: Player) -> interactions.Response:
+    def joinPlayer(self, playerData: Player, otherRequestData: Optional[str]) -> interactions.Response:
         '''
         Called when a player wants to join a Game.
+        otherRequestData is extra data that can be send by joining players to the game
         '''
         return NotImplemented
     

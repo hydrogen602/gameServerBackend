@@ -57,7 +57,7 @@ class RequestProcessor:
         elif game.hasGameStarted:
             return interactions.ResponseFailure(playerData, &#39;Game has already started&#39;)
         
-        response = game.joinPlayer(playerData)
+        response = game.joinPlayer(playerData, r.otherData)
         playerData.setGameID(r.gameID)
         if isinstance(response, interactions.Response):
                 return response
@@ -161,7 +161,7 @@ request is send to the right game</p></div>
         elif game.hasGameStarted:
             return interactions.ResponseFailure(playerData, &#39;Game has already started&#39;)
         
-        response = game.joinPlayer(playerData)
+        response = game.joinPlayer(playerData, r.otherData)
         playerData.setGameID(r.gameID)
         if isinstance(response, interactions.Response):
                 return response

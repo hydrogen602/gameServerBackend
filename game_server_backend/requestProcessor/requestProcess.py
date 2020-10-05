@@ -29,7 +29,7 @@ class RequestProcessor:
         elif game.hasGameStarted:
             return interactions.ResponseFailure(playerData, 'Game has already started')
         
-        response = game.joinPlayer(playerData)
+        response = game.joinPlayer(playerData, r.otherData)
         playerData.setGameID(r.gameID)
         if isinstance(response, interactions.Response):
                 return response
