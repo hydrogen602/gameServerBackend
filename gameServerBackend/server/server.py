@@ -86,7 +86,8 @@ class Server:
             u'{}://{}:{}'.format(protocol, ip, port), 
             self.logFile, 
             serverCallback=self.callback,
-            tokenDataStorage=playerTokenStorage
+            tokenDataStorage=playerTokenStorage,
+            playerDB=self.__requestProcessor.playerDatabase
             )
 
         self.server.protocol = _ServerProtocol

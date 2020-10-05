@@ -24,6 +24,10 @@ class ChatSystem(game.AbstractGame):
         return interactions.ResponseSuccess('Joined successfully', playerData, (list(self.__players), f'{playerData.getPlayerName()} joined'))
 
     def handleRequest(self, playerData: Player, request: str) -> interactions.Response:
+        if request.startswith('/'):
+            if request == '/h' or request == '/help':
+                return interactions.ResponseSuccess('Help not yet implemented', playerData)
+
         return interactions.ResponseSuccess(None, playerData, (list(self.__players), f'{playerData.getPlayerName()}> {request}'))
 
     def leavePlayer(self, playerData: Player) -> interactions.ResponseSuccess:

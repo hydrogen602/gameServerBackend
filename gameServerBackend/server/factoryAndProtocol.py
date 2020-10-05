@@ -1,5 +1,6 @@
 from __future__ import annotations
 from gameServerBackend.requestProcessor.interactions import Response
+from gameServerBackend.requestProcessor.dataTypes import PlayerManager
 from ..requestProcessor import interactions
 from .tokenStorage import TokenStorage
 
@@ -45,10 +46,14 @@ class _ServerProtocol(WebSocketServerProtocol):
         log.msg(f'Client connecting: "{request.peer}" with path "{request.path}"')
         self.clientTypeRequest = request.path
 
+        self.__isOpen = False
+
     def onOpen(self):
         if not hasattr(self, 'clientTypeRequest'):
             raise RuntimeError("Connected without setting clientTypeRequest, this should never happen")
         clientTypeRequest: str = getattr(self, 'clientTypeRequest')
+
+        self.__isOpen = True
 
         # process the type of request
         if clientTypeRequest.startswith('/'):
@@ -66,7 +71,7 @@ class _ServerProtocol(WebSocketServerProtocol):
 
             self.sendMessage(json.dumps({'token': self.__token}))
         
-        self.__isOpen = True
+        
 
     def onClose(self, wasClean, code, reason):
         log.msg('WebSocket connection closed: {0}'.format(reason))
@@ -91,6 +96,9 @@ class _ServerProtocol(WebSocketServerProtocol):
             self.factory.onMessage(msg, self)
     
     def sendMessage(self, payload: Union[str, bytes], isBinary=False, fragmentSize=None, sync=False, doNotCompress=False):
+        if not self.isOpen:
+            log.msg('Attempting to send to closed connection! ' + str(payload))
+            return
         if isinstance(payload, str):
             payload = payload.encode()
         return super().sendMessage(payload, isBinary=isBinary, fragmentSize=fragmentSize, sync=sync, doNotCompress=doNotCompress)
@@ -101,7 +109,7 @@ class _ServerFactory(WebSocketServerFactory):
     Keeps track of all connections and relays data to other clients
     '''
 
-    def __init__(self, url: str, f, serverCallback: Callable[[interactions.UnprocessedClientRequest], interactions.Response], tokenDataStorage: TokenStorage):
+    def __init__(self, url: str, f, serverCallback: Callable[[interactions.UnprocessedClientRequest], interactions.Response], tokenDataStorage: TokenStorage, playerDB: PlayerManager):
         '''
         Initializes the class
         Args:
@@ -119,6 +127,10 @@ class _ServerFactory(WebSocketServerFactory):
 
         self.__tokenDataStorage: TokenStorage = tokenDataStorage
         self.__connection: Dict[str, _ServerProtocol] = {}
+
+        self.__backlog: Dict[str, List[str]] = {}
+
+        self.__playerDB: PlayerManager = playerDB
 
         WebSocketServerFactory.__init__(self, url)
     
@@ -190,6 +202,10 @@ class _ServerFactory(WebSocketServerFactory):
             name = tmpLs[1]
             token = tmpLs[2]
 
+            if len(name) == 0:
+                client.sendClose(code=4000, reason='Name missing')
+                return None
+
             if token.lower().strip() in ('null', 'none', 'nil'):
                 token = None
 
@@ -215,6 +231,18 @@ class _ServerFactory(WebSocketServerFactory):
                 return None
             name = result
 
+            # has token and token known
+            if token not in self.__backlog:
+                raise RuntimeError('This shouldn\'t happen')
+        
+        playerData = self.__playerDB.getPlayer(name)
+        if playerData is not None and playerData.getGameID() == gameID:
+            # same game, send backLog
+            if token and token in self.__backlog:
+                for msg in self.__backlog[token]:
+                    self.broadcastToPlayer(msg, playerID=name)
+                self.__backlog[token].clear()
+        
         request = interactions.JoinGameClientRequest(playerID=name, gameId=gameID, otherData=other)
         
         response = self.serverCallback(request)
@@ -223,6 +251,7 @@ class _ServerFactory(WebSocketServerFactory):
             if token is None:
                 token = self.__tokenDataStorage.addPlayerID(playerID=name)
             self.__connection[token] = client # __handleResponse depends on __connection
+            self.__backlog[token] = []
             self.__handleResponse(response)
         else:
             client.sendClose(code=4000, reason=json.dumps({'ResponseFailure': response.errorMsg}))
@@ -263,18 +292,19 @@ class _ServerFactory(WebSocketServerFactory):
         else:
             log.msg("Disconnected player, but token not found?:", token)
 
-    def broadcastToAll(self, msg: str): # sourceConnection: ServerProtocol
-        '''
-        Sends a message of type `str` to all currently connected
-        players
-        '''
-        self.file.write(msg + '\n')
-        self.file.flush()
+    # def broadcastToAll(self, msg: str): # sourceConnection: ServerProtocol
+    #     '''
+    #     Sends a message of type `str` to all currently connected
+    #     players.
+    #     Due to supporting multiple games, this has no use
+    #     '''
+    #     self.file.write(msg + '\n')
+    #     self.file.flush()
 
-        encoded = msg.encode()
+    #     encoded = msg.encode()
 
-        for token, connection in self.__connection.items():
-            connection.sendMessage(encoded)
+    #     for token, connection in self.__connection.items():
+    #         connection.sendMessage(encoded)
     
     def broadcastToSome(self, msg: str, tokenList: List[str]):
         '''
@@ -285,7 +315,10 @@ class _ServerFactory(WebSocketServerFactory):
         encoded = msg.encode()
         
         for token in tokenList:
-            self.__connection[token].sendMessage(msg)
+            if token not in self.__connection:
+                self.__backlog[token].append(msg)
+            else:
+                self.__connection[token].sendMessage(encoded)
     
     def broadcastToPlayer(self, msg: str, playerID: str):
         '''
@@ -294,5 +327,8 @@ class _ServerFactory(WebSocketServerFactory):
         token = self.__tokenDataStorage.getTokenbyPlayerID(playerID=playerID)
         if token is None:
             raise RuntimeError('playerID not found')
-
-        self.__connection[token].sendMessage(msg)
+        
+        if token not in self.__connection:
+            self.__backlog[token].append(msg)
+        else:
+            self.__connection[token].sendMessage(msg)

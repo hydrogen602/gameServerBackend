@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Testing</title>
+
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            input {
+                margin-bottom: 1em;
+            }
+            #chatBox {
+                border: 1px solid black;
+            }
+        </style>
+    </head>
+    <body>
+        <form id="login">
+            <label for="ipPort">Address</label>
+            <input type="text" value="localhost:5000" readonly id="ipPort"><br>
+            <label for="gameID">Connect to </label>
+            <input type="text" value="chat" readonly id="gameID"><br>
+            <label for="name">Name </label>
+            <input type="text" id="name"><br>
+            <button onclick="connect()" type="button">Connect</button>
+        </form>
+        <p id="errMsg">No Error</p>
+
+        <div id="chatBox">
+
+        </div>
+        <form>
+            <label for="msg">Message </label>
+            <input type="text" id="msg">
+            <button onclick="sendMsg()" type="button">Send</button>
+        </form>
+
+        <script>
+
+            let token = "null";
+            let ws = null;
+
+            function connect() {
+                let addr = document.getElementById('ipPort').value
+                let gameID = document.getElementById('gameID').value
+                let name = document.getElementById('name').value
+
+                ws = new WebSocket(`ws://${addr}/${gameID}/${name}/${token}`);
+
+                ws.onopen = (e) => {
+                    document.getElementById('login').hidden = true;
+                    document.getElementById('errMsg').innerText = '';
+                }
+
+                ws.onclose = (e) => {
+                    document.getElementById('login').hidden = false;
+                    document.getElementById('errMsg').innerText = e.reason;
+                    console.log('close', e);
+                }
+
+                ws.onerror = (e) => {
+                    document.getElementById('login').hidden = false;
+                    document.getElementById('errMsg').innerText = 'fail';
+                    console.log('error', e);
+                }
+
+                ws.onmessage = (e) => {
+                    document.getElementById('errMsg').innerText = '';
+
+                    msg = e.data
+
+                    try {
+                        obj = JSON.parse(msg)
+                        if ('token' in obj) {
+                            token = obj['token']
+                            console.log('got token: ' + token)
+                        }
+                    }
+                    catch (e) { 
+                        console.log(e)
+                        elem = document.createElement('p')
+                        elem.innerText = msg
+                        document.getElementById('chatBox').appendChild(elem)
+                    }
+                }
+            }
+
+            function sendMsg() {
+                if (ws != null) {
+                    ws.send( document.getElementById('msg').value );
+                    document.getElementById('msg').value = '';
+                }
+            }
+        </script>
+    </body>
+</html>
