@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="game-server-backend-hydrogen602", # Replace with your own username
+    name="gameServerBackend",
     version="0.0.1",
     author="hydrogen602",
     author_email="hydrogen31415@gmail.com",
