@@ -36,4 +36,4 @@ jobs:
         pytest 
     - name: Lint with mypy
       run: |
-        mypy gameServerBackend/ 
+        mypy game_server_backend/ 

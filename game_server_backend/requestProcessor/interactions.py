@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Dict, List, Optional, TYPE_CHECKING, Tuple
 if TYPE_CHECKING:
-    from gameServerBackend.requestProcessor.dataTypes import Player
+    from game_server_backend.requestProcessor.dataTypes import Player
 
 
 class UnprocessedClientRequest:

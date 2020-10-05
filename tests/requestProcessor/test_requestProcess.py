@@ -5,10 +5,10 @@ import sys
 
 sys.path.append(os.path.abspath(os.curdir))
 
-from gameServerBackend.requestProcessor.requestProcess import RequestProcessor
-from gameServerBackend.requestProcessor.dataTypes import BasicPlayerManager, BasicGameManager, Player
-from gameServerBackend.requestProcessor import interactions
-from gameServerBackend.requestProcessor.game import AbstractGame
+from game_server_backend.requestProcessor.requestProcess import RequestProcessor
+from game_server_backend.requestProcessor.dataTypes import BasicPlayerManager, BasicGameManager, Player
+from game_server_backend.requestProcessor import interactions
+from game_server_backend.requestProcessor.game import AbstractGame
 
 
 class HelperGame(AbstractGame):

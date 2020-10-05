@@ -1,6 +1,6 @@
 from __future__ import annotations
-from gameServerBackend.requestProcessor.interactions import Response
-from gameServerBackend.requestProcessor.dataTypes import PlayerManager
+from game_server_backend.requestProcessor.interactions import Response
+from game_server_backend.requestProcessor.dataTypes import PlayerManager
 from ..requestProcessor import interactions
 from .tokenStorage import TokenStorage
 

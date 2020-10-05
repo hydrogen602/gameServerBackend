@@ -5,7 +5,7 @@ import sys
 
 sys.path.append(os.path.abspath(os.curdir))
 
-from gameServerBackend.requestProcessor import errors
+from game_server_backend.requestProcessor import errors
 
 
 def test_error():

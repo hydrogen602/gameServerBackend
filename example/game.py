@@ -9,8 +9,8 @@ import os
 from typing import Dict, Set
 sys.path.append(os.path.join(os.curdir, '..'))
 
-from gameServerBackend.requestProcessor import dataTypes, game, interactions, RequestProcessor, Player
-from gameServerBackend.server import Server
+from game_server_backend.requestProcessor import dataTypes, game, interactions, RequestProcessor, Player
+from game_server_backend.server import Server
 
 
 class ChatSystem(game.AbstractGame):

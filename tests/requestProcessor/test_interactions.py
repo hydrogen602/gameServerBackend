@@ -4,8 +4,8 @@ import sys
 
 sys.path.append(os.path.abspath(os.curdir))
 
-from gameServerBackend.requestProcessor.dataTypes import Player
-from gameServerBackend.requestProcessor import interactions
+from game_server_backend.requestProcessor.dataTypes import Player
+from game_server_backend.requestProcessor import interactions
 
 def test_request():
     x = interactions.UnprocessedClientRequest('test', 'sample')

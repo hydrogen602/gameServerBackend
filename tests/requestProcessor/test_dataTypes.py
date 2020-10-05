@@ -5,7 +5,7 @@ import sys
 
 sys.path.append(os.path.abspath(os.curdir))
 
-from gameServerBackend.requestProcessor import dataTypes
+from game_server_backend.requestProcessor import dataTypes
 
 def test_player1():
     p = dataTypes.Player('test')
