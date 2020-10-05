@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.1" />
 <title>game_server_backend.server API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Handles communcation with players with websockets. In order to run
+this project, create an instance of `server.Server` and call `.run()`
+on it, and it …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +24,20 @@
 <h1 class="title">Module <code>game_server_backend.server</code></h1>
 </header>
 <section id="section-intro">
+<p>Handles communcation with players with websockets. In order to run
+this project, create an instance of <code><a title="game_server_backend.server.server.Server" href="server.html#game_server_backend.server.server.Server">Server</a></code> and call <code>.run()</code>
+on it, and it will handle connections until receiving a SIGINT (^C).</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from .server import Server
+<pre><code class="python">&#39;&#39;&#39;
+Handles communcation with players with websockets. In order to run
+this project, create an instance of `server.Server` and call `.run()`
+on it, and it will handle connections until receiving a SIGINT (^C).
+&#39;&#39;&#39;
+
+from .server import Server
 from .tokenStorage import TokenStorage</code></pre>
 </details>
 </section>
@@ -35,12 +46,12 @@ from .tokenStorage import TokenStorage</code></pre>
 <dl>
 <dt><code class="name"><a title="game_server_backend.server.factoryAndProtocol" href="factoryAndProtocol.html">game_server_backend.server.factoryAndProtocol</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Internal classes</p></div>
 </dd>
 <dt><code class="name"><a title="game_server_backend.server.server" href="server.html">game_server_backend.server.server</a></code></dt>
 <dd>
 <div class="desc"><p>Server code for setting up a WebSocket server, handling connections, and verifying
-connection details …</p></div>
+connection details. The class <code>Server</code> is what is used to run the …</p></div>
 </dd>
 <dt><code class="name"><a title="game_server_backend.server.tokenStorage" href="tokenStorage.html">game_server_backend.server.tokenStorage</a></code></dt>
 <dd>

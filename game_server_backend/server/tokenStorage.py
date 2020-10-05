@@ -7,26 +7,47 @@ if TYPE_CHECKING:
 
 
 class TokenStorage(ABC):
+    '''
+    An interface so that custom data structures can be used.
+    It is used to match up tokens used for identifying players with their names, as if
+    we used names for identification, it could easily be spoofed. 
+    Note: This is not a secure system at all, it merely tries to dissuade
+    basic shenanigens.
+    Note: Player ID and Player name are used interchangeable 
+    '''
 
     @abstractmethod
     def getPlayerIDbyToken(self, token: str) -> Optional[str]:
+        '''
+        Returns the token by player id. If the token isn't found,
+        it returns None.
+        '''
         return NotImplemented
     
     @abstractmethod
     def getTokenbyPlayerID(self, playerID: Union[str, Player]) -> Optional[str]:
+        '''
+        Returns the player id by name. If the player id isn't found,
+        it returns None.
+        '''
         return NotImplemented
     
     @abstractmethod
     def addPlayerID(self, playerID: Union[str, Player]) -> str:
         '''
         Add a player with a player id to the list and
-        generate and return a token.
+        generate and return a unique token.
         Raise ValueError if the player id already exists.
         '''
         return NotImplemented
 
 
 class BasicTokenStorage(TokenStorage):
+    '''
+    A simple implementation for TokenStorage
+    using two dictionaries. It is used as default
+    if a custom implementation is not specified. 
+    '''
 
     def __init__(self, maximum: int = 100):
         self.__tokenBased: Dict[str, str] = {}

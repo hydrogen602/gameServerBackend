@@ -1,3 +1,7 @@
+'''
+Internal classes
+'''
+
 from __future__ import annotations
 from game_server_backend.requestProcessor.interactions import Response
 from game_server_backend.requestProcessor.dataTypes import PlayerManager
@@ -14,7 +18,7 @@ from twisted.python import log # type: ignore
 
 class _ServerProtocol(WebSocketServerProtocol):
     '''
-    Sending a message of 'Hi' returns two messages, 'Hello' and a json
+    Sending a message of 'hi' returns two messages, 'hello world' and a json
     that is {'token': token}
     '''
 

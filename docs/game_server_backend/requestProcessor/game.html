@@ -40,7 +40,7 @@ class AbstractGame(ABC):
     Remember to call super().__init__() in
     the __init__ methods of any subclass.
 
-    _hasGameStarted tracks if the game has started
+    _hasGameStarted: bool tracks if the game has started
     &#39;&#39;&#39;
     
     def __init__(self):
@@ -48,9 +48,17 @@ class AbstractGame(ABC):
     
     @property
     def hasGameStarted(self) -&gt; bool:
+        &#39;&#39;&#39;
+        Returns if a game has started or not
+        &#39;&#39;&#39;
         return self._hasGameStarted
     
     def startGame(self):
+        &#39;&#39;&#39;
+        starts the game. This sets
+        _hasGameStarted to True. If the game
+        has already started, it throws a ValueError.
+        &#39;&#39;&#39;
         if self._hasGameStarted:
             raise ValueError(&#39;Game already started&#39;)
         self._hasGameStarted = True
@@ -97,7 +105,7 @@ It provides a few necessary methods for games to
 interact with the game managing code.
 Remember to call super().<strong>init</strong>() in
 the <strong>init</strong> methods of any subclass.</p>
-<p>_hasGameStarted tracks if the game has started</p></div>
+<p>_hasGameStarted: bool tracks if the game has started</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -110,7 +118,7 @@ the <strong>init</strong> methods of any subclass.</p>
     Remember to call super().__init__() in
     the __init__ methods of any subclass.
 
-    _hasGameStarted tracks if the game has started
+    _hasGameStarted: bool tracks if the game has started
     &#39;&#39;&#39;
     
     def __init__(self):
@@ -118,9 +126,17 @@ the <strong>init</strong> methods of any subclass.</p>
     
     @property
     def hasGameStarted(self) -&gt; bool:
+        &#39;&#39;&#39;
+        Returns if a game has started or not
+        &#39;&#39;&#39;
         return self._hasGameStarted
     
     def startGame(self):
+        &#39;&#39;&#39;
+        starts the game. This sets
+        _hasGameStarted to True. If the game
+        has already started, it throws a ValueError.
+        &#39;&#39;&#39;
         if self._hasGameStarted:
             raise ValueError(&#39;Game already started&#39;)
         self._hasGameStarted = True
@@ -156,13 +172,16 @@ the <strong>init</strong> methods of any subclass.</p>
 <dl>
 <dt id="game_server_backend.requestProcessor.game.AbstractGame.hasGameStarted"><code class="name">var <span class="ident">hasGameStarted</span> : bool</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns if a game has started or not</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
 def hasGameStarted(self) -&gt; bool:
+    &#39;&#39;&#39;
+    Returns if a game has started or not
+    &#39;&#39;&#39;
     return self._hasGameStarted</code></pre>
 </details>
 </dd>
@@ -228,12 +247,19 @@ def leavePlayer(self, playerData: Player) -&gt; interactions.ResponseSuccess:
 <span>def <span class="ident">startGame</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>starts the game. This sets
+_hasGameStarted to True. If the game
+has already started, it throws a ValueError.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def startGame(self):
+    &#39;&#39;&#39;
+    starts the game. This sets
+    _hasGameStarted to True. If the game
+    has already started, it throws a ValueError.
+    &#39;&#39;&#39;
     if self._hasGameStarted:
         raise ValueError(&#39;Game already started&#39;)
     self._hasGameStarted = True</code></pre>

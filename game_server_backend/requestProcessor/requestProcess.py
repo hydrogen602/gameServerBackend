@@ -64,6 +64,11 @@ class RequestProcessor:
                 #interactions.ResponseFailure('Unknown Error')
 
     def process(self, r: interactions.UnprocessedClientRequest) -> interactions.Response:
+        '''
+        Handle an `UnprocessedClientRequest`. It forwards the
+        data to the game and takes the given Response and returns
+        it to the Server code.
+        '''
         assert isinstance(r, interactions.UnprocessedClientRequest)
         
         playerData = self.playerDatabase.getPlayer(r.playerID)

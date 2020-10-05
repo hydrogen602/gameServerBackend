@@ -92,6 +92,11 @@ class RequestProcessor:
                 #interactions.ResponseFailure(&#39;Unknown Error&#39;)
 
     def process(self, r: interactions.UnprocessedClientRequest) -&gt; interactions.Response:
+        &#39;&#39;&#39;
+        Handle an `UnprocessedClientRequest`. It forwards the
+        data to the game and takes the given Response and returns
+        it to the Server code.
+        &#39;&#39;&#39;
         assert isinstance(r, interactions.UnprocessedClientRequest)
         
         playerData = self.playerDatabase.getPlayer(r.playerID)
@@ -191,6 +196,11 @@ request is send to the right game</p></div>
                 #interactions.ResponseFailure(&#39;Unknown Error&#39;)
 
     def process(self, r: interactions.UnprocessedClientRequest) -&gt; interactions.Response:
+        &#39;&#39;&#39;
+        Handle an `UnprocessedClientRequest`. It forwards the
+        data to the game and takes the given Response and returns
+        it to the Server code.
+        &#39;&#39;&#39;
         assert isinstance(r, interactions.UnprocessedClientRequest)
         
         playerData = self.playerDatabase.getPlayer(r.playerID)
@@ -210,12 +220,19 @@ request is send to the right game</p></div>
 <span>def <span class="ident">process</span></span>(<span>self, r: interactions.UnprocessedClientRequest) ‑> <a title="game_server_backend.requestProcessor.interactions.Response" href="interactions.html#game_server_backend.requestProcessor.interactions.Response">Response</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Handle an <code>UnprocessedClientRequest</code>. It forwards the
+data to the game and takes the given Response and returns
+it to the Server code.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def process(self, r: interactions.UnprocessedClientRequest) -&gt; interactions.Response:
+    &#39;&#39;&#39;
+    Handle an `UnprocessedClientRequest`. It forwards the
+    data to the game and takes the given Response and returns
+    it to the Server code.
+    &#39;&#39;&#39;
     assert isinstance(r, interactions.UnprocessedClientRequest)
     
     playerData = self.playerDatabase.getPlayer(r.playerID)

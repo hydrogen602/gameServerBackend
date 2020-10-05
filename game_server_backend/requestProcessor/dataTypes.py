@@ -11,6 +11,7 @@ class Player:
     this for additional functionality.
     It should keep all data regarding a player
     '''
+
     __namesUsed: Set[str] = set()
 
     @classmethod
@@ -37,9 +38,15 @@ class Player:
         return self.__gameID
     
     def setGameID(self, id: Optional[str]):
+        '''
+        Set the game id of the player's current game.
+        '''
         self.__gameID = id
     
     def getPlayerName(self) -> str:
+        '''
+        Get the player name/id
+        '''
         return self.__playerName
     
     def __eq__(self, o: object) -> bool:
@@ -68,10 +75,17 @@ class PlayerManager(ABC):
     
     @abstractmethod
     def getPlayer(self, id: str) -> Optional[Player]:
+        '''
+        Get the Player object corresponding with a player name/id.
+        Returns None if not found.
+        '''
         return NotImplemented
     
     @abstractmethod
     def getAllPlayersIDs(self) -> Set[str]:
+        '''
+        Get all player names/ids
+        '''
         return NotImplemented
 
 
@@ -84,22 +98,40 @@ class GameManager(ABC):
 
     @abstractmethod
     def getGame(self, id: str) -> Optional[AbstractGame]:
+        '''
+        Get the Game object correspoding to the game id and None if not found.
+        '''
         return NotImplemented
     
     @abstractmethod
     def addGame(self, id: str, game: AbstractGame):
+        '''
+        Add a game together with its game id.
+        '''
         return NotImplemented
     
     @abstractmethod
     def removeGame(self, id: str) -> AbstractGame:
+        '''
+        Remove a game. It is not known if this works, so use with caution
+        or avoid all together.
+        '''
         return NotImplemented
     
     @abstractmethod
     def getAllGameIDs(self) -> Set[str]:
+        '''
+        Get all game ids
+        '''
         return NotImplemented
 
 
 class BasicPlayerManager(PlayerManager):
+    '''
+    The default implementation of PlayerManager
+    if no custom implementation is given.
+    '''
+
     def __init__(self) -> None:
         self.__data: Dict[str, Player] = {}
     
@@ -120,6 +152,11 @@ class BasicPlayerManager(PlayerManager):
 
 
 class BasicGameManager(GameManager):
+    '''
+    The default implementation of GameManager
+    if no custom implementation is given.
+    '''
+
     def __init__(self) -> None:
         self.__data: Dict[str, AbstractGame] = {}
 

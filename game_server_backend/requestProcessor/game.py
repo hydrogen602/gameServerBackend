@@ -12,7 +12,7 @@ class AbstractGame(ABC):
     Remember to call super().__init__() in
     the __init__ methods of any subclass.
 
-    _hasGameStarted tracks if the game has started
+    _hasGameStarted: bool tracks if the game has started
     '''
     
     def __init__(self):
@@ -20,9 +20,17 @@ class AbstractGame(ABC):
     
     @property
     def hasGameStarted(self) -> bool:
+        '''
+        Returns if a game has started or not
+        '''
         return self._hasGameStarted
     
     def startGame(self):
+        '''
+        starts the game. This sets
+        _hasGameStarted to True. If the game
+        has already started, it throws a ValueError.
+        '''
         if self._hasGameStarted:
             raise ValueError('Game already started')
         self._hasGameStarted = True

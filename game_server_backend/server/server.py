@@ -1,10 +1,6 @@
 '''
 Server code for setting up a WebSocket server, handling connections, and verifying
-connection details.
-
-This code borrows from an earlier project with the CISS ROV Robotics Team,
-but still my code
-
+connection details. The class `Server` is what is used to run the project.
 
 Required 3rd-party libraries:
 `autobahn`
@@ -34,11 +30,9 @@ class Server:
         To setup the server, run `s = Server()`,
         and then run `s.run()` to start it.
 
-        Requires keyword argument `callbackFunc` which should
-        be of type `Callable[[interactions.UnprocessedClientRequest],
-        interactions.Response]`. This is
-        for handling incoming messages and should return
-        a status update to clients.
+        If config is None, it will look for a config.json file.
+        If neither the argument nor file exists, it will
+        raise an Exception.
 
         Config options are:
         USE_SSL: bool
@@ -46,9 +40,11 @@ class Server:
         key: str
         cert: str
 
-
+        verbose defaults to False if not found
         key & cert are only needed if USE_SSL==True
         '''
+        assert isinstance(requestProcessor, RequestProcessor)
+        assert isinstance(playerTokenStorage, TokenStorage)
 
         if config is None:
             config = self.__getConfig()
@@ -130,22 +126,18 @@ class Server:
         return self.__requestProcessor.process(re)
         
 
-    def run(self):
+    def run(self, serverLogFilename: str = 'twistedLog.log'):
         '''
         Run the server. This method will not return
         until the server is ended by an Exception like ^C.
-
-        init_msgs are for messages that should be send to the player
-        immediately, like the game map for example.
         '''
         log.startLogging(sys.stdout, setStdout=True)
 
-        logFile = logfile.LogFile.fromFullPath('twistedLog.log')
+        logFile = logfile.LogFile.fromFullPath(serverLogFilename)
         log.addObserver(log.FileLogObserver(logFile).emit)
 
         try:
             # start listening for and handling connections
-            # task.deferLater(reactor, 1, lambda: [self.server.broadcastToAll(msg) for msg in init_msgs])
             reactor.run() # pylint: disable=no-member
         except KeyboardInterrupt:
             print('KeyboardInterrupt')
