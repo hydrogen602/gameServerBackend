@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.1" />
+<title>game_server_backend.server.factoryAndProtocol API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>game_server_backend.server.factoryAndProtocol</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from __future__ import annotations
+from game_server_backend.requestProcessor.interactions import Response
+from game_server_backend.requestProcessor.dataTypes import PlayerManager
+from ..requestProcessor import interactions
+from .tokenStorage import TokenStorage
+
+import json
+from typing import Callable, Dict, List, Optional, Union
+
+from autobahn.twisted.websocket import WebSocketServerProtocol, WebSocketServerFactory # type: ignore
+from autobahn.websocket.protocol import ConnectingRequest # type: ignore
+from twisted.python import log # type: ignore
+
+
+class _ServerProtocol(WebSocketServerProtocol):
+    &#39;&#39;&#39;
+    Sending a message of &#39;Hi&#39; returns two messages, &#39;Hello&#39; and a json
+    that is {&#39;token&#39;: token}
+    &#39;&#39;&#39;
+
+    factory: _ServerFactory
+
+    @property
+    def token(self) -&gt; Optional[str]:
+        &#39;&#39;&#39;
+        Returns the token if it exists. A token is generated once
+        the websocket enters the open state.
+        &#39;&#39;&#39;
+        try:
+            return self.__token
+        except AttributeError:
+            return None
+    
+    @property
+    def isOpen(self) -&gt; bool:
+        try:
+            return self.__isOpen
+        except AttributeError:
+            return False
+
+    def onConnect(self, request: ConnectingRequest):
+        # print(request.headers)
+        # print(request.protocols)
+
+        # debug information
+        log.msg(f&#39;Client connecting: &#34;{request.peer}&#34; with path &#34;{request.path}&#34;&#39;)
+        self.clientTypeRequest = request.path
+
+        self.__isOpen = False
+
+    def onOpen(self):
+        if not hasattr(self, &#39;clientTypeRequest&#39;):
+            raise RuntimeError(&#34;Connected without setting clientTypeRequest, this should never happen&#34;)
+        clientTypeRequest: str = getattr(self, &#39;clientTypeRequest&#39;)
+
+        self.__isOpen = True
+
+        # process the type of request
+        if clientTypeRequest.startswith(&#39;/&#39;):
+            # remove the slash if there is one
+            clientTypeRequest = clientTypeRequest[1:]
+
+        # tell the factory to remember the connection
+        self.__token = self.factory.register(self, clientTypeRequest)
+
+        if self.__token is None:
+            log.msg(&#39;WebSocket connection rejected in register&#39;)
+        else:
+            log.msg(&#39;WebSocket connection open&#39;)
+            
+
+            self.sendMessage(json.dumps({&#39;token&#39;: self.__token}))
+        
+        
+
+    def onClose(self, wasClean, code, reason):
+        log.msg(&#39;WebSocket connection closed: {0}&#39;.format(reason))
+        self.__isOpen = False
+
+        # tell the factory that this connection is dead
+        self.factory.deregister(self)
+
+    def onMessage(self, msg, isBinary):
+        msg = msg.decode()
+
+        if msg.lower() == &#39;hi&#39;:
+            self.sendMessage(b&#34;hello world&#34;)
+
+            msg = json.dumps({&#39;token&#39;: self.factory.getToken(self)})
+            self.sendMessage(msg)
+
+        elif msg == &#39;history&#39;:
+            self.factory.sendHistory(self)
+
+        else:
+            self.factory.onMessage(msg, self)
+    
+    def sendMessage(self, payload: Union[str, bytes], isBinary=False, fragmentSize=None, sync=False, doNotCompress=False):
+        if not self.isOpen:
+            log.msg(&#39;Attempting to send to closed connection! &#39; + str(payload))
+            return
+        if isinstance(payload, str):
+            payload = payload.encode()
+        return super().sendMessage(payload, isBinary=isBinary, fragmentSize=fragmentSize, sync=sync, doNotCompress=doNotCompress)
+
+
+class _ServerFactory(WebSocketServerFactory):
+    &#39;&#39;&#39;
+    Keeps track of all connections and relays data to other clients
+    &#39;&#39;&#39;
+
+    def __init__(self, url: str, f, serverCallback: Callable[[interactions.UnprocessedClientRequest], interactions.Response], tokenDataStorage: TokenStorage, playerDB: PlayerManager, verbose: bool = False):
+        &#39;&#39;&#39;
+        Initializes the class
+        Args:
+            url (str): has to be in the format of &#34;ws://127.0.0.1:8008&#34;
+            f (file): a writable file for logging
+        
+        The playerManager should be shared with the GameManager
+        &#39;&#39;&#39;
+
+        self.file = f
+
+        # self.history = [g.getAsJson()]
+
+        self.serverCallback = serverCallback
+
+        self.__tokenDataStorage: TokenStorage = tokenDataStorage
+        self.__connection: Dict[str, _ServerProtocol] = {}
+
+        self.__backlog: Dict[str, List[str]] = {}
+
+        self.__playerDB: PlayerManager = playerDB
+
+        self.__verbose: bool = verbose
+
+        WebSocketServerFactory.__init__(self, url)
+    
+    def updateAll(self):
+        &#39;&#39;&#39;
+        Sends the current game state to all players
+        &#39;&#39;&#39;
+        self.broadcastToAll(self.g.getAsJson())
+    
+    def getToken(self, client: _ServerProtocol) -&gt; str:
+        t = client.token
+        if t is None:
+            raise RuntimeError(&#39;client has not yet registered. This error should not occur ever&#39;)
+
+        return t
+    
+    # def sendHistory(self, client):
+    #     for msg in self.history:
+    #         client.sendMessage(msg.encode())
+    #     client.sendMessage(self.g.getAsJson()) # latest state of the board
+    
+    def onMessage(self, msg: str, client: _ServerProtocol):
+        token: Optional[str] = self.getToken(client)
+        if token is None:
+            raise RuntimeError(&#39;No token assigned to player?&#39;)
+
+        playerID = self.__tokenDataStorage.getPlayerIDbyToken(token)
+        if playerID is None:
+            raise RuntimeError(&#39;client not in token database. This error should not occur ever&#39;)
+
+        request = interactions.UnprocessedClientRequest(playerID=playerID, request=msg)
+        self.__handleResponse(self.serverCallback(request))
+
+    def register(self, client: _ServerProtocol, clientTypeRequest: str) -&gt; Optional[str]:
+        &#39;&#39;&#39;
+        Called by any new connecting client to address
+        whether they are a new player or a reconnecting one.
+
+        The request line should be 
+            /gameID/name/token/...     &lt;- reconnect
+            /gameID/name/null/...      &lt;- first connect
+        
+        but the first / is removed by onConnect
+        &#39;&#39;&#39;
+        token: Optional[str] = None
+        name: Optional[str] = None
+        gameID: Optional[str] = None
+        other: Optional[str] = None
+
+        if len(clientTypeRequest.strip()) == 0:
+            #log.msg(&#39;name missing&#39;)
+            #client.sendHttpErrorResponse(404, &#39;Name missing&#39;)
+            client.sendClose(code=4000, reason=&#39;Name missing&#39;) # send close reason is logged
+            #client.sendClose()
+            return None
+
+        
+        tmp: str = clientTypeRequest.strip()
+        tmpLs = tmp.split(&#39;/&#39;)
+        del tmp
+
+        l = len(tmpLs)
+        if l &lt; 3:
+            #log.msg(&#39;incomplete data&#39;)
+            client.sendClose(code=4000, reason=&#39;Login data incomplete&#39;)
+            return None
+        else:
+            gameID = tmpLs[0]
+            name = tmpLs[1]
+            token = tmpLs[2]
+
+            if len(name) == 0:
+                client.sendClose(code=4000, reason=&#39;Name missing&#39;)
+                return None
+
+            if token.lower().strip() in (&#39;null&#39;, &#39;none&#39;, &#39;nil&#39;):
+                token = None
+
+            if l &gt; 3:
+                other = &#39;/&#39;.join(tmpLs[3:])
+        
+
+        if name is None or gameID is None:
+            raise RuntimeError(&#34;Something went wrong in register&#34;)
+        
+        if token is None:
+            tmp2: Optional[str] = self.__tokenDataStorage.getTokenbyPlayerID(name)
+            if tmp2 is not None:
+                client.sendClose(code=4000, reason=&#39;Name taken&#39;)
+                return None
+        else:
+            result = self.__tokenDataStorage.getPlayerIDbyToken(token)
+            if result is None:
+                client.sendClose(code=4000, reason=&#39;Token unknown&#39;)
+                return None
+            if result != name:
+                client.sendClose(code=4000, reason=&#39;Name taken&#39;)
+                return None
+            name = result
+
+        preJoinGameID: Optional[str]
+        playerData = self.__playerDB.getPlayer(name)
+        if playerData is not None and playerData.getGameID() == gameID:
+            preJoinGameID = playerData.getGameID()
+        else:
+            preJoinGameID = None
+        
+        if self.__verbose: log.msg(&#39;building JoinGameClientRequest&#39;)
+
+        request = interactions.JoinGameClientRequest(playerID=name, gameId=gameID, otherData=other)
+
+        response = self.serverCallback(request)
+
+        if response.isValid:
+            if self.__verbose: log.msg(&#39;got a successful response&#39;)
+            if token is None:
+                token = self.__tokenDataStorage.addPlayerID(playerID=name)
+            self.__connection[token] = client # __handleResponse depends on __connection
+
+            if preJoinGameID is not None and preJoinGameID == gameID:
+                # same game, send backLog
+                log.msg(f&#34;Reconnecting: {token}: {name}&#34;)
+                if token and token in self.__backlog:
+                    for msg in self.__backlog[token]:
+                        self.broadcastToPlayer(msg, playerID=name)
+                    #self.__backlog[token].clear() this happens next line anyway
+
+            self.__backlog[token] = []
+            if self.__verbose: log.msg(&#39;send response&#39;)
+            self.__handleResponse(response)
+        else:
+            if self.__verbose: log.msg(&#39;got a failed response&#39;)
+            client.sendClose(code=4000, reason=json.dumps({&#39;ResponseFailure&#39;: response.errorMsg}))
+            return None
+
+        return token
+
+    def __handleResponse(self, res: Response):
+        if isinstance(res, interactions.ResponseSuccess):
+            if res.dataToAll:
+                players, data = res.dataToAll
+
+                def requireHelper(x: Optional[str]) -&gt; str:
+                    if x is not None:
+                        return x
+                    raise RuntimeError(&#39;player id not found. This shouldnt happen&#39;)
+
+                tokens = [requireHelper(self.__tokenDataStorage.getTokenbyPlayerID(p.getPlayerName())) for p in players]
+                self.broadcastToSome(data, tokens)
+            if res.dataToSender:
+                self.broadcastToPlayer(res.dataToSender, res.sender.getPlayerName())
+            if res.dataToSome:
+                for player, msg in res.dataToSome.items():
+                    self.broadcastToPlayer(msg, playerID=player.getPlayerName())
+
+        elif isinstance(res, interactions.ResponseFailure):
+            log.msg(f&#34;Error: ResponseFailure: {res.errorMsg}&#34;)
+            errMsg = json.dumps({&#39;ResponseFailure&#39;: res.errorMsg})
+            self.broadcastToPlayer(errMsg, res.sender.getPlayerName())
+
+    def deregister(self, client: _ServerProtocol):
+        token = client.token
+        if token is None:
+            log.msg(&#34;Player disconnected before assigned token:&#34;, token)
+        elif token in self.__connection:
+            self.__connection.pop(token)
+            log.msg(&#34;Disconnected player:&#34;, token)
+        else:
+            log.msg(&#34;Disconnected player, but token not found?:&#34;, token)
+
+    # def broadcastToAll(self, msg: str): # sourceConnection: ServerProtocol
+    #     &#39;&#39;&#39;
+    #     Sends a message of type `str` to all currently connected
+    #     players.
+    #     Due to supporting multiple games, this has no use
+    #     &#39;&#39;&#39;
+    #     self.file.write(msg + &#39;\n&#39;)
+    #     self.file.flush()
+
+    #     encoded = msg.encode()
+
+    #     for token, connection in self.__connection.items():
+    #         connection.sendMessage(encoded)
+    
+    def broadcastToSome(self, msg: str, tokenList: List[str]):
+        &#39;&#39;&#39;
+        Sends a message of type `str` to all currently connected
+        players whose token is found in the list.
+        &#39;&#39;&#39;
+        
+        encoded = msg.encode()
+        
+        for token in tokenList:
+            if token not in self.__connection:
+                self.__backlog[token].append(msg)
+            else:
+                self.__connection[token].sendMessage(encoded)
+    
+    def broadcastToPlayer(self, msg: str, playerID: str):
+        &#39;&#39;&#39;
+        Sends a message of type `str` to the player
+        &#39;&#39;&#39;
+        token = self.__tokenDataStorage.getTokenbyPlayerID(playerID=playerID)
+        if token is None:
+            raise RuntimeError(&#39;playerID not found&#39;)
+        
+        if token not in self.__connection:
+            self.__backlog[token].append(msg)
+        else:
+            self.__connection[token].sendMessage(msg)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="game_server_backend.server" href="index.html">game_server_backend.server</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+</footer>
+</body>
+</html>
