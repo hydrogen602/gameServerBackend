@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gameServerBackend",
-    version="0.0.1",
+    version="0.0.2",
     author="hydrogen602",
     author_email="hydrogen31415@gmail.com",
     description="A framework that interfaces games with websockets",

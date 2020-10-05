@@ -28,6 +28,7 @@
 </summary>
 <pre><code class="python">from __future__ import annotations
 from abc import ABC, abstractmethod
+from typing import Optional
 from .dataTypes import Player
 from . import interactions
 
@@ -64,7 +65,7 @@ class AbstractGame(ABC):
         self._hasGameStarted = True
 
     @abstractmethod
-    def joinPlayer(self, playerData: Player, otherRequestData: str) -&gt; interactions.Response:
+    def joinPlayer(self, playerData: Player, otherRequestData: Optional[str]) -&gt; interactions.Response:
         &#39;&#39;&#39;
         Called when a player wants to join a Game.
         otherRequestData is extra data that can be send by joining players to the game
@@ -143,7 +144,7 @@ the <strong>init</strong> methods of any subclass.</p>
         self._hasGameStarted = True
 
     @abstractmethod
-    def joinPlayer(self, playerData: Player, otherRequestData: str) -&gt; interactions.Response:
+    def joinPlayer(self, playerData: Player, otherRequestData: Optional[str]) -&gt; interactions.Response:
         &#39;&#39;&#39;
         Called when a player wants to join a Game.
         otherRequestData is extra data that can be send by joining players to the game
@@ -210,7 +211,7 @@ def handleRequest(self, playerData: Player, request: str) -&gt; interactions.Res
 </details>
 </dd>
 <dt id="game_server_backend.requestProcessor.game.AbstractGame.joinPlayer"><code class="name flex">
-<span>def <span class="ident">joinPlayer</span></span>(<span>self, playerData: Player, otherRequestData: str) ‑> <a title="game_server_backend.requestProcessor.interactions.Response" href="interactions.html#game_server_backend.requestProcessor.interactions.Response">Response</a></span>
+<span>def <span class="ident">joinPlayer</span></span>(<span>self, playerData: Player, otherRequestData: Optional[str]) ‑> <a title="game_server_backend.requestProcessor.interactions.Response" href="interactions.html#game_server_backend.requestProcessor.interactions.Response">Response</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Called when a player wants to join a Game.
@@ -220,7 +221,7 @@ otherRequestData is extra data that can be send by joining players to the game</
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def joinPlayer(self, playerData: Player, otherRequestData: str) -&gt; interactions.Response:
+def joinPlayer(self, playerData: Player, otherRequestData: Optional[str]) -&gt; interactions.Response:
     &#39;&#39;&#39;
     Called when a player wants to join a Game.
     otherRequestData is extra data that can be send by joining players to the game
