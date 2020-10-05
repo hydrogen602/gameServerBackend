@@ -35,26 +35,47 @@ if TYPE_CHECKING:
 
 
 class TokenStorage(ABC):
+    &#39;&#39;&#39;
+    An interface so that custom data structures can be used.
+    It is used to match up tokens used for identifying players with their names, as if
+    we used names for identification, it could easily be spoofed. 
+    Note: This is not a secure system at all, it merely tries to dissuade
+    basic shenanigens.
+    Note: Player ID and Player name are used interchangeable 
+    &#39;&#39;&#39;
 
     @abstractmethod
     def getPlayerIDbyToken(self, token: str) -&gt; Optional[str]:
+        &#39;&#39;&#39;
+        Returns the token by player id. If the token isn&#39;t found,
+        it returns None.
+        &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
     def getTokenbyPlayerID(self, playerID: Union[str, Player]) -&gt; Optional[str]:
+        &#39;&#39;&#39;
+        Returns the player id by name. If the player id isn&#39;t found,
+        it returns None.
+        &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
     def addPlayerID(self, playerID: Union[str, Player]) -&gt; str:
         &#39;&#39;&#39;
         Add a player with a player id to the list and
-        generate and return a token.
+        generate and return a unique token.
         Raise ValueError if the player id already exists.
         &#39;&#39;&#39;
         return NotImplemented
 
 
 class BasicTokenStorage(TokenStorage):
+    &#39;&#39;&#39;
+    A simple implementation for TokenStorage
+    using two dictionaries. It is used as default
+    if a custom implementation is not specified. 
+    &#39;&#39;&#39;
 
     def __init__(self, maximum: int = 100):
         self.__tokenBased: Dict[str, str] = {}
@@ -105,13 +126,19 @@ class BasicTokenStorage(TokenStorage):
 <span>(</span><span>maximum: int = 100)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+<div class="desc"><p>A simple implementation for TokenStorage
+using two dictionaries. It is used as default
+if a custom implementation is not specified.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BasicTokenStorage(TokenStorage):
+    &#39;&#39;&#39;
+    A simple implementation for TokenStorage
+    using two dictionaries. It is used as default
+    if a custom implementation is not specified. 
+    &#39;&#39;&#39;
 
     def __init__(self, maximum: int = 100):
         self.__tokenBased: Dict[str, str] = {}
@@ -148,42 +175,13 @@ inheritance.</p></div>
 <li><a title="game_server_backend.server.tokenStorage.TokenStorage" href="#game_server_backend.server.tokenStorage.TokenStorage">TokenStorage</a></li>
 <li>abc.ABC</li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="game_server_backend.server.tokenStorage.BasicTokenStorage.getPlayerIDbyToken"><code class="name flex">
-<span>def <span class="ident">getPlayerIDbyToken</span></span>(<span>self, token: str) ‑> Union[str, NoneType]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def getPlayerIDbyToken(self, token: str) -&gt; Optional[str]:
-    return self.__tokenBased.get(token)</code></pre>
-</details>
-</dd>
-<dt id="game_server_backend.server.tokenStorage.BasicTokenStorage.getTokenbyPlayerID"><code class="name flex">
-<span>def <span class="ident">getTokenbyPlayerID</span></span>(<span>self, playerID: Union[str, Player]) ‑> Optional[str]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def getTokenbyPlayerID(self, playerID: Union[str, Player]) -&gt; Optional[str]:
-    if not isinstance(playerID, str):
-        playerID = playerID.getPlayerName()
-    return self.__playerIDBased.get(playerID)</code></pre>
-</details>
-</dd>
-</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="game_server_backend.server.tokenStorage.TokenStorage" href="#game_server_backend.server.tokenStorage.TokenStorage">TokenStorage</a></b></code>:
 <ul class="hlist">
 <li><code><a title="game_server_backend.server.tokenStorage.TokenStorage.addPlayerID" href="#game_server_backend.server.tokenStorage.TokenStorage.addPlayerID">addPlayerID</a></code></li>
+<li><code><a title="game_server_backend.server.tokenStorage.TokenStorage.getPlayerIDbyToken" href="#game_server_backend.server.tokenStorage.TokenStorage.getPlayerIDbyToken">getPlayerIDbyToken</a></code></li>
+<li><code><a title="game_server_backend.server.tokenStorage.TokenStorage.getTokenbyPlayerID" href="#game_server_backend.server.tokenStorage.TokenStorage.getTokenbyPlayerID">getTokenbyPlayerID</a></code></li>
 </ul>
 </li>
 </ul>
@@ -192,27 +190,47 @@ inheritance.</p></div>
 <span>class <span class="ident">TokenStorage</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+<div class="desc"><p>An interface so that custom data structures can be used.
+It is used to match up tokens used for identifying players with their names, as if
+we used names for identification, it could easily be spoofed.
+Note: This is not a secure system at all, it merely tries to dissuade
+basic shenanigens.
+Note: Player ID and Player name are used interchangeable</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TokenStorage(ABC):
+    &#39;&#39;&#39;
+    An interface so that custom data structures can be used.
+    It is used to match up tokens used for identifying players with their names, as if
+    we used names for identification, it could easily be spoofed. 
+    Note: This is not a secure system at all, it merely tries to dissuade
+    basic shenanigens.
+    Note: Player ID and Player name are used interchangeable 
+    &#39;&#39;&#39;
 
     @abstractmethod
     def getPlayerIDbyToken(self, token: str) -&gt; Optional[str]:
+        &#39;&#39;&#39;
+        Returns the token by player id. If the token isn&#39;t found,
+        it returns None.
+        &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
     def getTokenbyPlayerID(self, playerID: Union[str, Player]) -&gt; Optional[str]:
+        &#39;&#39;&#39;
+        Returns the player id by name. If the player id isn&#39;t found,
+        it returns None.
+        &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
     def addPlayerID(self, playerID: Union[str, Player]) -&gt; str:
         &#39;&#39;&#39;
         Add a player with a player id to the list and
-        generate and return a token.
+        generate and return a unique token.
         Raise ValueError if the player id already exists.
         &#39;&#39;&#39;
         return NotImplemented</code></pre>
@@ -232,7 +250,7 @@ inheritance.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Add a player with a player id to the list and
-generate and return a token.
+generate and return a unique token.
 Raise ValueError if the player id already exists.</p></div>
 <details class="source">
 <summary>
@@ -242,7 +260,7 @@ Raise ValueError if the player id already exists.</p></div>
 def addPlayerID(self, playerID: Union[str, Player]) -&gt; str:
     &#39;&#39;&#39;
     Add a player with a player id to the list and
-    generate and return a token.
+    generate and return a unique token.
     Raise ValueError if the player id already exists.
     &#39;&#39;&#39;
     return NotImplemented</code></pre>
@@ -252,13 +270,18 @@ def addPlayerID(self, playerID: Union[str, Player]) -&gt; str:
 <span>def <span class="ident">getPlayerIDbyToken</span></span>(<span>self, token: str) ‑> Union[str, NoneType]</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns the token by player id. If the token isn't found,
+it returns None.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def getPlayerIDbyToken(self, token: str) -&gt; Optional[str]:
+    &#39;&#39;&#39;
+    Returns the token by player id. If the token isn&#39;t found,
+    it returns None.
+    &#39;&#39;&#39;
     return NotImplemented</code></pre>
 </details>
 </dd>
@@ -266,13 +289,18 @@ def getPlayerIDbyToken(self, token: str) -&gt; Optional[str]:
 <span>def <span class="ident">getTokenbyPlayerID</span></span>(<span>self, playerID: Union[str, Player]) ‑> Optional[str]</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns the player id by name. If the player id isn't found,
+it returns None.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def getTokenbyPlayerID(self, playerID: Union[str, Player]) -&gt; Optional[str]:
+    &#39;&#39;&#39;
+    Returns the player id by name. If the player id isn&#39;t found,
+    it returns None.
+    &#39;&#39;&#39;
     return NotImplemented</code></pre>
 </details>
 </dd>
@@ -296,10 +324,6 @@ def getTokenbyPlayerID(self, playerID: Union[str, Player]) -&gt; Optional[str]:
 <ul>
 <li>
 <h4><code><a title="game_server_backend.server.tokenStorage.BasicTokenStorage" href="#game_server_backend.server.tokenStorage.BasicTokenStorage">BasicTokenStorage</a></code></h4>
-<ul class="">
-<li><code><a title="game_server_backend.server.tokenStorage.BasicTokenStorage.getPlayerIDbyToken" href="#game_server_backend.server.tokenStorage.BasicTokenStorage.getPlayerIDbyToken">getPlayerIDbyToken</a></code></li>
-<li><code><a title="game_server_backend.server.tokenStorage.BasicTokenStorage.getTokenbyPlayerID" href="#game_server_backend.server.tokenStorage.BasicTokenStorage.getTokenbyPlayerID">getTokenbyPlayerID</a></code></li>
-</ul>
 </li>
 <li>
 <h4><code><a title="game_server_backend.server.tokenStorage.TokenStorage" href="#game_server_backend.server.tokenStorage.TokenStorage">TokenStorage</a></code></h4>

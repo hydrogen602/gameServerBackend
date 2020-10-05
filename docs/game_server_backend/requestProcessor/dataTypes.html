@@ -39,6 +39,7 @@ class Player:
     this for additional functionality.
     It should keep all data regarding a player
     &#39;&#39;&#39;
+
     __namesUsed: Set[str] = set()
 
     @classmethod
@@ -65,9 +66,15 @@ class Player:
         return self.__gameID
     
     def setGameID(self, id: Optional[str]):
+        &#39;&#39;&#39;
+        Set the game id of the player&#39;s current game.
+        &#39;&#39;&#39;
         self.__gameID = id
     
     def getPlayerName(self) -&gt; str:
+        &#39;&#39;&#39;
+        Get the player name/id
+        &#39;&#39;&#39;
         return self.__playerName
     
     def __eq__(self, o: object) -&gt; bool:
@@ -96,10 +103,17 @@ class PlayerManager(ABC):
     
     @abstractmethod
     def getPlayer(self, id: str) -&gt; Optional[Player]:
+        &#39;&#39;&#39;
+        Get the Player object corresponding with a player name/id.
+        Returns None if not found.
+        &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
     def getAllPlayersIDs(self) -&gt; Set[str]:
+        &#39;&#39;&#39;
+        Get all player names/ids
+        &#39;&#39;&#39;
         return NotImplemented
 
 
@@ -112,22 +126,40 @@ class GameManager(ABC):
 
     @abstractmethod
     def getGame(self, id: str) -&gt; Optional[AbstractGame]:
+        &#39;&#39;&#39;
+        Get the Game object correspoding to the game id and None if not found.
+        &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
     def addGame(self, id: str, game: AbstractGame):
+        &#39;&#39;&#39;
+        Add a game together with its game id.
+        &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
     def removeGame(self, id: str) -&gt; AbstractGame:
+        &#39;&#39;&#39;
+        Remove a game. It is not known if this works, so use with caution
+        or avoid all together.
+        &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
     def getAllGameIDs(self) -&gt; Set[str]:
+        &#39;&#39;&#39;
+        Get all game ids
+        &#39;&#39;&#39;
         return NotImplemented
 
 
 class BasicPlayerManager(PlayerManager):
+    &#39;&#39;&#39;
+    The default implementation of PlayerManager
+    if no custom implementation is given.
+    &#39;&#39;&#39;
+
     def __init__(self) -&gt; None:
         self.__data: Dict[str, Player] = {}
     
@@ -148,6 +180,11 @@ class BasicPlayerManager(PlayerManager):
 
 
 class BasicGameManager(GameManager):
+    &#39;&#39;&#39;
+    The default implementation of GameManager
+    if no custom implementation is given.
+    &#39;&#39;&#39;
+
     def __init__(self) -&gt; None:
         self.__data: Dict[str, AbstractGame] = {}
 
@@ -184,14 +221,18 @@ class BasicGameManager(GameManager):
 <span>class <span class="ident">BasicGameManager</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>GameManager is an interface between
-the request processor and any possible
-storage system for the player data.</p></div>
+<div class="desc"><p>The default implementation of GameManager
+if no custom implementation is given.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BasicGameManager(GameManager):
+    &#39;&#39;&#39;
+    The default implementation of GameManager
+    if no custom implementation is given.
+    &#39;&#39;&#39;
+
     def __init__(self) -&gt; None:
         self.__data: Dict[str, AbstractGame] = {}
 
@@ -219,78 +260,34 @@ storage system for the player data.</p></div>
 <li><a title="game_server_backend.requestProcessor.dataTypes.GameManager" href="#game_server_backend.requestProcessor.dataTypes.GameManager">GameManager</a></li>
 <li>abc.ABC</li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="game_server_backend.requestProcessor.dataTypes.BasicGameManager.addGame"><code class="name flex">
-<span>def <span class="ident">addGame</span></span>(<span>self, gameID: str, game: AbstractGame)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def addGame(self, gameID: str, game: AbstractGame):
-    if gameID in self.__data:
-        raise ValueError(&#39;game already exists&#39;)
-    self.__data[gameID] = game</code></pre>
-</details>
-</dd>
-<dt id="game_server_backend.requestProcessor.dataTypes.BasicGameManager.getAllGameIDs"><code class="name flex">
-<span>def <span class="ident">getAllGameIDs</span></span>(<span>self) ‑> Set[str]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def getAllGameIDs(self) -&gt; Set[str]:
-    return set(self.__data.keys())</code></pre>
-</details>
-</dd>
-<dt id="game_server_backend.requestProcessor.dataTypes.BasicGameManager.getGame"><code class="name flex">
-<span>def <span class="ident">getGame</span></span>(<span>self, id: str) ‑> Optional[AbstractGame]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def getGame(self, id: str) -&gt; Optional[AbstractGame]:
-    return self.__data.get(id)</code></pre>
-</details>
-</dd>
-<dt id="game_server_backend.requestProcessor.dataTypes.BasicGameManager.removeGame"><code class="name flex">
-<span>def <span class="ident">removeGame</span></span>(<span>self, gameID: str) ‑> AbstractGame</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def removeGame(self, gameID: str) -&gt; AbstractGame:
-    if gameID not in self.__data:
-        raise KeyError(&#39;GameID not found&#39;)
-    return self.__data.pop(gameID)</code></pre>
-</details>
-</dd>
-</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="game_server_backend.requestProcessor.dataTypes.GameManager" href="#game_server_backend.requestProcessor.dataTypes.GameManager">GameManager</a></b></code>:
+<ul class="hlist">
+<li><code><a title="game_server_backend.requestProcessor.dataTypes.GameManager.addGame" href="#game_server_backend.requestProcessor.dataTypes.GameManager.addGame">addGame</a></code></li>
+<li><code><a title="game_server_backend.requestProcessor.dataTypes.GameManager.getAllGameIDs" href="#game_server_backend.requestProcessor.dataTypes.GameManager.getAllGameIDs">getAllGameIDs</a></code></li>
+<li><code><a title="game_server_backend.requestProcessor.dataTypes.GameManager.getGame" href="#game_server_backend.requestProcessor.dataTypes.GameManager.getGame">getGame</a></code></li>
+<li><code><a title="game_server_backend.requestProcessor.dataTypes.GameManager.removeGame" href="#game_server_backend.requestProcessor.dataTypes.GameManager.removeGame">removeGame</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 <dt id="game_server_backend.requestProcessor.dataTypes.BasicPlayerManager"><code class="flex name class">
 <span>class <span class="ident">BasicPlayerManager</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>PlayerManager is an interface between
-the request processor and any possible
-storage system for the player data.</p></div>
+<div class="desc"><p>The default implementation of PlayerManager
+if no custom implementation is given.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BasicPlayerManager(PlayerManager):
+    &#39;&#39;&#39;
+    The default implementation of PlayerManager
+    if no custom implementation is given.
+    &#39;&#39;&#39;
+
     def __init__(self) -&gt; None:
         self.__data: Dict[str, Player] = {}
     
@@ -314,40 +311,13 @@ storage system for the player data.</p></div>
 <li><a title="game_server_backend.requestProcessor.dataTypes.PlayerManager" href="#game_server_backend.requestProcessor.dataTypes.PlayerManager">PlayerManager</a></li>
 <li>abc.ABC</li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="game_server_backend.requestProcessor.dataTypes.BasicPlayerManager.getAllPlayersIDs"><code class="name flex">
-<span>def <span class="ident">getAllPlayersIDs</span></span>(<span>self) ‑> Set[str]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def getAllPlayersIDs(self) -&gt; Set[str]:
-    return set(self.__data.keys())</code></pre>
-</details>
-</dd>
-<dt id="game_server_backend.requestProcessor.dataTypes.BasicPlayerManager.getPlayer"><code class="name flex">
-<span>def <span class="ident">getPlayer</span></span>(<span>self, id: str) ‑> Union[<a title="game_server_backend.requestProcessor.dataTypes.Player" href="#game_server_backend.requestProcessor.dataTypes.Player">Player</a>, NoneType]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def getPlayer(self, id: str) -&gt; Optional[Player]:
-    return self.__data.get(id)</code></pre>
-</details>
-</dd>
-</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="game_server_backend.requestProcessor.dataTypes.PlayerManager" href="#game_server_backend.requestProcessor.dataTypes.PlayerManager">PlayerManager</a></b></code>:
 <ul class="hlist">
 <li><code><a title="game_server_backend.requestProcessor.dataTypes.PlayerManager.addPlayer" href="#game_server_backend.requestProcessor.dataTypes.PlayerManager.addPlayer">addPlayer</a></code></li>
+<li><code><a title="game_server_backend.requestProcessor.dataTypes.PlayerManager.getAllPlayersIDs" href="#game_server_backend.requestProcessor.dataTypes.PlayerManager.getAllPlayersIDs">getAllPlayersIDs</a></code></li>
+<li><code><a title="game_server_backend.requestProcessor.dataTypes.PlayerManager.getPlayer" href="#game_server_backend.requestProcessor.dataTypes.PlayerManager.getPlayer">getPlayer</a></code></li>
 </ul>
 </li>
 </ul>
@@ -372,18 +342,31 @@ storage system for the player data.</p></div>
 
     @abstractmethod
     def getGame(self, id: str) -&gt; Optional[AbstractGame]:
+        &#39;&#39;&#39;
+        Get the Game object correspoding to the game id and None if not found.
+        &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
     def addGame(self, id: str, game: AbstractGame):
+        &#39;&#39;&#39;
+        Add a game together with its game id.
+        &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
     def removeGame(self, id: str) -&gt; AbstractGame:
+        &#39;&#39;&#39;
+        Remove a game. It is not known if this works, so use with caution
+        or avoid all together.
+        &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
     def getAllGameIDs(self) -&gt; Set[str]:
+        &#39;&#39;&#39;
+        Get all game ids
+        &#39;&#39;&#39;
         return NotImplemented</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -400,13 +383,16 @@ storage system for the player data.</p></div>
 <span>def <span class="ident">addGame</span></span>(<span>self, id: str, game: AbstractGame)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Add a game together with its game id.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def addGame(self, id: str, game: AbstractGame):
+    &#39;&#39;&#39;
+    Add a game together with its game id.
+    &#39;&#39;&#39;
     return NotImplemented</code></pre>
 </details>
 </dd>
@@ -414,13 +400,16 @@ def addGame(self, id: str, game: AbstractGame):
 <span>def <span class="ident">getAllGameIDs</span></span>(<span>self) ‑> Set[str]</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Get all game ids</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def getAllGameIDs(self) -&gt; Set[str]:
+    &#39;&#39;&#39;
+    Get all game ids
+    &#39;&#39;&#39;
     return NotImplemented</code></pre>
 </details>
 </dd>
@@ -428,13 +417,16 @@ def getAllGameIDs(self) -&gt; Set[str]:
 <span>def <span class="ident">getGame</span></span>(<span>self, id: str) ‑> Optional[AbstractGame]</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Get the Game object correspoding to the game id and None if not found.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def getGame(self, id: str) -&gt; Optional[AbstractGame]:
+    &#39;&#39;&#39;
+    Get the Game object correspoding to the game id and None if not found.
+    &#39;&#39;&#39;
     return NotImplemented</code></pre>
 </details>
 </dd>
@@ -442,13 +434,18 @@ def getGame(self, id: str) -&gt; Optional[AbstractGame]:
 <span>def <span class="ident">removeGame</span></span>(<span>self, id: str) ‑> AbstractGame</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Remove a game. It is not known if this works, so use with caution
+or avoid all together.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def removeGame(self, id: str) -&gt; AbstractGame:
+    &#39;&#39;&#39;
+    Remove a game. It is not known if this works, so use with caution
+    or avoid all together.
+    &#39;&#39;&#39;
     return NotImplemented</code></pre>
 </details>
 </dd>
@@ -472,6 +469,7 @@ It should keep all data regarding a player</p></div>
     this for additional functionality.
     It should keep all data regarding a player
     &#39;&#39;&#39;
+
     __namesUsed: Set[str] = set()
 
     @classmethod
@@ -498,9 +496,15 @@ It should keep all data regarding a player</p></div>
         return self.__gameID
     
     def setGameID(self, id: Optional[str]):
+        &#39;&#39;&#39;
+        Set the game id of the player&#39;s current game.
+        &#39;&#39;&#39;
         self.__gameID = id
     
     def getPlayerName(self) -&gt; str:
+        &#39;&#39;&#39;
+        Get the player name/id
+        &#39;&#39;&#39;
         return self.__playerName
     
     def __eq__(self, o: object) -&gt; bool:
@@ -538,12 +542,15 @@ if the player is not part of a game.</p></div>
 <span>def <span class="ident">getPlayerName</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Get the player name/id</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def getPlayerName(self) -&gt; str:
+    &#39;&#39;&#39;
+    Get the player name/id
+    &#39;&#39;&#39;
     return self.__playerName</code></pre>
 </details>
 </dd>
@@ -551,12 +558,15 @@ if the player is not part of a game.</p></div>
 <span>def <span class="ident">setGameID</span></span>(<span>self, id: Optional[str])</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Set the game id of the player's current game.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def setGameID(self, id: Optional[str]):
+    &#39;&#39;&#39;
+    Set the game id of the player&#39;s current game.
+    &#39;&#39;&#39;
     self.__gameID = id</code></pre>
 </details>
 </dd>
@@ -589,10 +599,17 @@ storage system for the player data.</p></div>
     
     @abstractmethod
     def getPlayer(self, id: str) -&gt; Optional[Player]:
+        &#39;&#39;&#39;
+        Get the Player object corresponding with a player name/id.
+        Returns None if not found.
+        &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
     def getAllPlayersIDs(self) -&gt; Set[str]:
+        &#39;&#39;&#39;
+        Get all player names/ids
+        &#39;&#39;&#39;
         return NotImplemented</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -626,13 +643,16 @@ def addPlayer(self, playerId: str) -&gt; Player:
 <span>def <span class="ident">getAllPlayersIDs</span></span>(<span>self) ‑> Set[str]</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Get all player names/ids</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def getAllPlayersIDs(self) -&gt; Set[str]:
+    &#39;&#39;&#39;
+    Get all player names/ids
+    &#39;&#39;&#39;
     return NotImplemented</code></pre>
 </details>
 </dd>
@@ -640,13 +660,18 @@ def getAllPlayersIDs(self) -&gt; Set[str]:
 <span>def <span class="ident">getPlayer</span></span>(<span>self, id: str) ‑> Union[<a title="game_server_backend.requestProcessor.dataTypes.Player" href="#game_server_backend.requestProcessor.dataTypes.Player">Player</a>, NoneType]</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Get the Player object corresponding with a player name/id.
+Returns None if not found.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def getPlayer(self, id: str) -&gt; Optional[Player]:
+    &#39;&#39;&#39;
+    Get the Player object corresponding with a player name/id.
+    Returns None if not found.
+    &#39;&#39;&#39;
     return NotImplemented</code></pre>
 </details>
 </dd>
@@ -670,19 +695,9 @@ def getPlayer(self, id: str) -&gt; Optional[Player]:
 <ul>
 <li>
 <h4><code><a title="game_server_backend.requestProcessor.dataTypes.BasicGameManager" href="#game_server_backend.requestProcessor.dataTypes.BasicGameManager">BasicGameManager</a></code></h4>
-<ul class="">
-<li><code><a title="game_server_backend.requestProcessor.dataTypes.BasicGameManager.addGame" href="#game_server_backend.requestProcessor.dataTypes.BasicGameManager.addGame">addGame</a></code></li>
-<li><code><a title="game_server_backend.requestProcessor.dataTypes.BasicGameManager.getAllGameIDs" href="#game_server_backend.requestProcessor.dataTypes.BasicGameManager.getAllGameIDs">getAllGameIDs</a></code></li>
-<li><code><a title="game_server_backend.requestProcessor.dataTypes.BasicGameManager.getGame" href="#game_server_backend.requestProcessor.dataTypes.BasicGameManager.getGame">getGame</a></code></li>
-<li><code><a title="game_server_backend.requestProcessor.dataTypes.BasicGameManager.removeGame" href="#game_server_backend.requestProcessor.dataTypes.BasicGameManager.removeGame">removeGame</a></code></li>
-</ul>
 </li>
 <li>
 <h4><code><a title="game_server_backend.requestProcessor.dataTypes.BasicPlayerManager" href="#game_server_backend.requestProcessor.dataTypes.BasicPlayerManager">BasicPlayerManager</a></code></h4>
-<ul class="">
-<li><code><a title="game_server_backend.requestProcessor.dataTypes.BasicPlayerManager.getAllPlayersIDs" href="#game_server_backend.requestProcessor.dataTypes.BasicPlayerManager.getAllPlayersIDs">getAllPlayersIDs</a></code></li>
-<li><code><a title="game_server_backend.requestProcessor.dataTypes.BasicPlayerManager.getPlayer" href="#game_server_backend.requestProcessor.dataTypes.BasicPlayerManager.getPlayer">getPlayer</a></code></li>
-</ul>
 </li>
 <li>
 <h4><code><a title="game_server_backend.requestProcessor.dataTypes.GameManager" href="#game_server_backend.requestProcessor.dataTypes.GameManager">GameManager</a></code></h4>

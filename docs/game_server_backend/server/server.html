@@ -6,7 +6,7 @@
 <meta name="generator" content="pdoc 0.9.1" />
 <title>game_server_backend.server.server API documentation</title>
 <meta name="description" content="Server code for setting up a WebSocket server, handling connections, and verifying
-connection details …" />
+connection details. The class `Server` is what is used to run the …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -24,9 +24,7 @@ connection details …" />
 </header>
 <section id="section-intro">
 <p>Server code for setting up a WebSocket server, handling connections, and verifying
-connection details.</p>
-<p>This code borrows from an earlier project with the CISS ROV Robotics Team,
-but still my code</p>
+connection details. The class <code><a title="game_server_backend.server.server.Server" href="#game_server_backend.server.server.Server">Server</a></code> is what is used to run the project.</p>
 <p>Required 3rd-party libraries:
 <code>autobahn</code>
 <code>twisted</code></p>
@@ -36,11 +34,7 @@ but still my code</p>
 </summary>
 <pre><code class="python">&#39;&#39;&#39;
 Server code for setting up a WebSocket server, handling connections, and verifying
-connection details.
-
-This code borrows from an earlier project with the CISS ROV Robotics Team,
-but still my code
-
+connection details. The class `Server` is what is used to run the project.
 
 Required 3rd-party libraries:
 `autobahn`
@@ -70,11 +64,9 @@ class Server:
         To setup the server, run `s = Server()`,
         and then run `s.run()` to start it.
 
-        Requires keyword argument `callbackFunc` which should
-        be of type `Callable[[interactions.UnprocessedClientRequest],
-        interactions.Response]`. This is
-        for handling incoming messages and should return
-        a status update to clients.
+        If config is None, it will look for a config.json file.
+        If neither the argument nor file exists, it will
+        raise an Exception.
 
         Config options are:
         USE_SSL: bool
@@ -82,9 +74,11 @@ class Server:
         key: str
         cert: str
 
-
+        verbose defaults to False if not found
         key &amp; cert are only needed if USE_SSL==True
         &#39;&#39;&#39;
+        assert isinstance(requestProcessor, RequestProcessor)
+        assert isinstance(playerTokenStorage, TokenStorage)
 
         if config is None:
             config = self.__getConfig()
@@ -166,22 +160,18 @@ class Server:
         return self.__requestProcessor.process(re)
         
 
-    def run(self):
+    def run(self, serverLogFilename: str = &#39;twistedLog.log&#39;):
         &#39;&#39;&#39;
         Run the server. This method will not return
         until the server is ended by an Exception like ^C.
-
-        init_msgs are for messages that should be send to the player
-        immediately, like the game map for example.
         &#39;&#39;&#39;
         log.startLogging(sys.stdout, setStdout=True)
 
-        logFile = logfile.LogFile.fromFullPath(&#39;twistedLog.log&#39;)
+        logFile = logfile.LogFile.fromFullPath(serverLogFilename)
         log.addObserver(log.FileLogObserver(logFile).emit)
 
         try:
             # start listening for and handling connections
-            # task.deferLater(reactor, 1, lambda: [self.server.broadcastToAll(msg) for msg in init_msgs])
             reactor.run() # pylint: disable=no-member
         except KeyboardInterrupt:
             print(&#39;KeyboardInterrupt&#39;)
@@ -208,17 +198,16 @@ class Server:
 <div class="desc"><p>A class for managing the code for running the server.
 To setup the server, run <code>s = Server()</code>,
 and then run <code>s.run()</code> to start it.</p>
-<p>Requires keyword argument <code>callbackFunc</code> which should
-be of type <code>Callable[[interactions.UnprocessedClientRequest],
-interactions.Response]</code>. This is
-for handling incoming messages and should return
-a status update to clients.</p>
+<p>If config is None, it will look for a config.json file.
+If neither the argument nor file exists, it will
+raise an Exception.</p>
 <p>Config options are:
 USE_SSL: bool
 verbose: bool
 key: str
 cert: str</p>
-<p>key &amp; cert are only needed if USE_SSL==True</p></div>
+<p>verbose defaults to False if not found
+key &amp; cert are only needed if USE_SSL==True</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -235,11 +224,9 @@ cert: str</p>
         To setup the server, run `s = Server()`,
         and then run `s.run()` to start it.
 
-        Requires keyword argument `callbackFunc` which should
-        be of type `Callable[[interactions.UnprocessedClientRequest],
-        interactions.Response]`. This is
-        for handling incoming messages and should return
-        a status update to clients.
+        If config is None, it will look for a config.json file.
+        If neither the argument nor file exists, it will
+        raise an Exception.
 
         Config options are:
         USE_SSL: bool
@@ -247,9 +234,11 @@ cert: str</p>
         key: str
         cert: str
 
-
+        verbose defaults to False if not found
         key &amp; cert are only needed if USE_SSL==True
         &#39;&#39;&#39;
+        assert isinstance(requestProcessor, RequestProcessor)
+        assert isinstance(playerTokenStorage, TokenStorage)
 
         if config is None:
             config = self.__getConfig()
@@ -331,22 +320,18 @@ cert: str</p>
         return self.__requestProcessor.process(re)
         
 
-    def run(self):
+    def run(self, serverLogFilename: str = &#39;twistedLog.log&#39;):
         &#39;&#39;&#39;
         Run the server. This method will not return
         until the server is ended by an Exception like ^C.
-
-        init_msgs are for messages that should be send to the player
-        immediately, like the game map for example.
         &#39;&#39;&#39;
         log.startLogging(sys.stdout, setStdout=True)
 
-        logFile = logfile.LogFile.fromFullPath(&#39;twistedLog.log&#39;)
+        logFile = logfile.LogFile.fromFullPath(serverLogFilename)
         log.addObserver(log.FileLogObserver(logFile).emit)
 
         try:
             # start listening for and handling connections
-            # task.deferLater(reactor, 1, lambda: [self.server.broadcastToAll(msg) for msg in init_msgs])
             reactor.run() # pylint: disable=no-member
         except KeyboardInterrupt:
             print(&#39;KeyboardInterrupt&#39;)
@@ -372,33 +357,27 @@ cert: str</p>
 </details>
 </dd>
 <dt id="game_server_backend.server.server.Server.run"><code class="name flex">
-<span>def <span class="ident">run</span></span>(<span>self)</span>
+<span>def <span class="ident">run</span></span>(<span>self, serverLogFilename: str = 'twistedLog.log')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Run the server. This method will not return
-until the server is ended by an Exception like ^C.</p>
-<p>init_msgs are for messages that should be send to the player
-immediately, like the game map for example.</p></div>
+until the server is ended by an Exception like ^C.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def run(self):
+<pre><code class="python">def run(self, serverLogFilename: str = &#39;twistedLog.log&#39;):
     &#39;&#39;&#39;
     Run the server. This method will not return
     until the server is ended by an Exception like ^C.
-
-    init_msgs are for messages that should be send to the player
-    immediately, like the game map for example.
     &#39;&#39;&#39;
     log.startLogging(sys.stdout, setStdout=True)
 
-    logFile = logfile.LogFile.fromFullPath(&#39;twistedLog.log&#39;)
+    logFile = logfile.LogFile.fromFullPath(serverLogFilename)
     log.addObserver(log.FileLogObserver(logFile).emit)
 
     try:
         # start listening for and handling connections
-        # task.deferLater(reactor, 1, lambda: [self.server.broadcastToAll(msg) for msg in init_msgs])
         reactor.run() # pylint: disable=no-member
     except KeyboardInterrupt:
         print(&#39;KeyboardInterrupt&#39;)
