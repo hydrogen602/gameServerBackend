@@ -42,6 +42,7 @@ class Server:
 
         Config options are:
         USE_SSL: bool
+        verbose: bool
         key: str
         cert: str
 
@@ -56,6 +57,14 @@ class Server:
         tmp = config['USE_SSL']
         assert isinstance(tmp, bool)
         USE_SSL: bool = tmp
+
+        verbose: bool
+        if 'verbose' in config:
+            tmp = config['verbose']
+            assert isinstance(tmp, bool)
+            verbose = tmp
+        else:
+            verbose = False
         
 
         regex = r'([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})|localhost'
@@ -87,7 +96,8 @@ class Server:
             self.logFile, 
             serverCallback=self.callback,
             tokenDataStorage=playerTokenStorage,
-            playerDB=self.__requestProcessor.playerDatabase
+            playerDB=self.__requestProcessor.playerDatabase,
+            verbose=verbose
             )
 
         self.server.protocol = _ServerProtocol

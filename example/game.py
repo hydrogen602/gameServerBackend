@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
     rp = RequestProcessor(playerDB, gameDB)
 
-    s = Server('localhost', 5000, requestProcessor=rp, config={'USE_SSL': False})
+    s = Server('localhost', 5000, requestProcessor=rp, config={'USE_SSL': False, 'verbose': True})
 
     s.run()
 

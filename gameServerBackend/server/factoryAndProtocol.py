@@ -109,7 +109,7 @@ class _ServerFactory(WebSocketServerFactory):
     Keeps track of all connections and relays data to other clients
     '''
 
-    def __init__(self, url: str, f, serverCallback: Callable[[interactions.UnprocessedClientRequest], interactions.Response], tokenDataStorage: TokenStorage, playerDB: PlayerManager):
+    def __init__(self, url: str, f, serverCallback: Callable[[interactions.UnprocessedClientRequest], interactions.Response], tokenDataStorage: TokenStorage, playerDB: PlayerManager, verbose: bool = False):
         '''
         Initializes the class
         Args:
@@ -131,6 +131,8 @@ class _ServerFactory(WebSocketServerFactory):
         self.__backlog: Dict[str, List[str]] = {}
 
         self.__playerDB: PlayerManager = playerDB
+
+        self.__verbose: bool = verbose
 
         WebSocketServerFactory.__init__(self, url)
     
@@ -231,29 +233,38 @@ class _ServerFactory(WebSocketServerFactory):
                 return None
             name = result
 
-            # has token and token known
-            if token not in self.__backlog:
-                raise RuntimeError('This shouldn\'t happen')
-        
+        preJoinGameID: Optional[str]
         playerData = self.__playerDB.getPlayer(name)
         if playerData is not None and playerData.getGameID() == gameID:
-            # same game, send backLog
-            if token and token in self.__backlog:
-                for msg in self.__backlog[token]:
-                    self.broadcastToPlayer(msg, playerID=name)
-                self.__backlog[token].clear()
+            preJoinGameID = playerData.getGameID()
+        else:
+            preJoinGameID = None
         
+        if self.__verbose: log.msg('building JoinGameClientRequest')
+
         request = interactions.JoinGameClientRequest(playerID=name, gameId=gameID, otherData=other)
-        
+
         response = self.serverCallback(request)
 
         if response.isValid:
+            if self.__verbose: log.msg('got a successful response')
             if token is None:
                 token = self.__tokenDataStorage.addPlayerID(playerID=name)
             self.__connection[token] = client # __handleResponse depends on __connection
+
+            if preJoinGameID is not None and preJoinGameID == gameID:
+                # same game, send backLog
+                log.msg(f"Reconnecting: {token}: {name}")
+                if token and token in self.__backlog:
+                    for msg in self.__backlog[token]:
+                        self.broadcastToPlayer(msg, playerID=name)
+                    #self.__backlog[token].clear() this happens next line anyway
+
             self.__backlog[token] = []
+            if self.__verbose: log.msg('send response')
             self.__handleResponse(response)
         else:
+            if self.__verbose: log.msg('got a failed response')
             client.sendClose(code=4000, reason=json.dumps({'ResponseFailure': response.errorMsg}))
             return None
 
@@ -268,7 +279,7 @@ class _ServerFactory(WebSocketServerFactory):
                     if x is not None:
                         return x
                     raise RuntimeError('player id not found. This shouldnt happen')
-                
+
                 tokens = [requireHelper(self.__tokenDataStorage.getTokenbyPlayerID(p.getPlayerName())) for p in players]
                 self.broadcastToSome(data, tokens)
             if res.dataToSender:

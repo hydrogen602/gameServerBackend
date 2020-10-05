@@ -35,6 +35,8 @@
             <input type="text" id="msg">
             <button onclick="sendMsg()" type="button">Send</button>
         </form>
+        <button onclick="disconnect()">Disconnect</button>
+        <button onclick="connect()">Reconnect</button>
 
         <script>
 
@@ -84,6 +86,10 @@
                         document.getElementById('chatBox').appendChild(elem)
                     }
                 }
+            }
+
+            function disconnect() {
+                ws.close()
             }
 
             function sendMsg() {
