@@ -6,7 +6,7 @@ a simple chat system
 
 import sys
 import os
-from typing import Dict, Set
+from typing import Optional, Set
 sys.path.append(os.path.join(os.curdir, '..'))
 
 from game_server_backend.requestProcessor import dataTypes, game, interactions, RequestProcessor, Player
@@ -19,7 +19,7 @@ class ChatSystem(game.AbstractGame):
         super().__init__()
         self.__players: Set[Player] = set()
 
-    def joinPlayer(self, playerData: Player) -> interactions.Response:
+    def joinPlayer(self, playerData: Player, otherRequestData: Optional[str]) -> interactions.Response:
         self.__players.add(playerData)
         return interactions.ResponseSuccess('Joined successfully', playerData, (list(self.__players), f'{playerData.getPlayerName()} joined'))
 
