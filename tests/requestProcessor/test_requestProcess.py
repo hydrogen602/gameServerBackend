@@ -1,4 +1,4 @@
-from typing import Set
+from typing import Optional, Set
 import pytest
 import os
 import sys
@@ -20,7 +20,7 @@ class HelperGame(AbstractGame):
     def handleRequest(self, playerData: Player, request: str) -> interactions.Response:
         return interactions.ResponseSuccess('request was: '+ request, playerData, None, None)
     
-    def joinPlayer(self, playerData: Player) -> interactions.Response:
+    def joinPlayer(self, playerData: Player, otherRequestData: Optional[str]) -> interactions.Response:
         assert playerData not in self._players
         self._players.add(playerData)
         return interactions.ResponseSuccess('', playerData, (list(self._players), f'player joined: "{playerData.getPlayerName()}"'), None)
