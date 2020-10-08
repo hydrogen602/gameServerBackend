@@ -12,7 +12,7 @@ import json
 from typing import Callable, Dict, List, Optional, Union
 
 from autobahn.twisted.websocket import WebSocketServerProtocol, WebSocketServerFactory # type: ignore
-from autobahn.websocket.protocol import ConnectingRequest # type: ignore
+from autobahn.websocket.protocol import ConnectingRequest, ConnectionDeny # type: ignore
 from twisted.python import log # type: ignore
 
 
@@ -47,6 +47,11 @@ class _ServerProtocol(WebSocketServerProtocol):
         # print(request.protocols)
 
         # debug information
+        x = len(request.path)
+        if x > 2000:
+            log.msg(f'Client: "{request.peer}" send a url path of len {x}, terminating')
+            raise ConnectionDeny('URL too long') 
+
         log.msg(f'Client connecting: "{request.peer}" with path "{request.path}"')
         self.clientTypeRequest = request.path
 
@@ -221,6 +226,11 @@ class _ServerFactory(WebSocketServerFactory):
 
         if name is None or gameID is None:
             raise RuntimeError("Something went wrong in register")
+
+        if len(name) > 32:
+            # to prevent someone filling up the database with junk
+            client.sendClose(code=4000, reason='Name too long, max is 32 characters')
+            return None
         
         if token is None:
             tmp2: Optional[str] = self.__tokenDataStorage.getTokenbyPlayerID(name)
