@@ -8,7 +8,7 @@ Required 3rd-party libraries:
 '''
 import sys
 import json
-from typing import Callable, Dict, Optional
+from typing import Dict, Optional
 import re
 
 from twisted.python import log, logfile # type: ignore
