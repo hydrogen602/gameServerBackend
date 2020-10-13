@@ -60,9 +60,7 @@ class PersistentTokenStorage(TokenStorage):
         atexit.register(self.__cleanup)
 
         self.__cur: sqlite3.Cursor = self.__conn.cursor()
-        # self.__cur.execute('SELECT name FROM sqlite_master WHERE type=\'table\';')
-        # for row in self.__cur:
-        #     print(row)
+
         self.__cur.execute('''
         CREATE TABLE IF NOT EXISTS token_storage (
             token TEXT NOT NULL UNIQUE,
@@ -70,7 +68,7 @@ class PersistentTokenStorage(TokenStorage):
         )
         ''')
         self.__conn.commit()
-    
+
     def __cleanup(self):
         self.__conn.close()
 
@@ -82,11 +80,11 @@ class PersistentTokenStorage(TokenStorage):
             return result[0][0]
         else:
             raise RuntimeError('Found token more than once. This should never happen!')
-    
+
     def getTokenbyPlayerID(self, playerID: Union[str, Player]) -> Optional[str]:
         if not isinstance(playerID, str):
             playerID = playerID.getPlayerName()
-        
+
         result = self.__cur.execute('SELECT token FROM token_storage WHERE name=?', (playerID,)).fetchall()
         if len(result) == 0:
             return None
@@ -94,18 +92,18 @@ class PersistentTokenStorage(TokenStorage):
             return result[0][0]
         else:
             raise RuntimeError('Found name more than once. This should never happen!')
-    
+
     def addPlayerID(self, playerID: Union[str, Player]) -> str:
         if not isinstance(playerID, str):
             playerID = playerID.getPlayerName()
-        
+
         if self.getTokenbyPlayerID(playerID) is not None:
             raise ValueError('Player ID taken')
-        
+
         token = token_urlsafe(16)
         while self.getPlayerIDbyToken(token) is not None:
             token = token_urlsafe(16)
-        
+
         self.__cur.execute('''
         INSERT INTO token_storage (name, token) VALUES (?, ?)
         ''', (playerID, token))

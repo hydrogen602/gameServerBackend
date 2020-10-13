@@ -1,6 +1,8 @@
 from __future__ import annotations
-from typing import Dict, Optional, Set, TYPE_CHECKING
+from typing import Dict, Optional, Set, TYPE_CHECKING, Union
 from abc import ABC, abstractmethod
+# import sqlite3
+# import atexit
 if TYPE_CHECKING:
     from .game import AbstractGame
 
