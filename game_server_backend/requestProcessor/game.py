@@ -1,6 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import List, Optional
 from .dataTypes import Player
 from . import interactions
 
@@ -49,6 +49,13 @@ class AbstractGame(ABC):
         '''
         Called when a player exits the game.
         If the player doesn't exist, ignore.
+        '''
+        return NotImplemented
+    
+    @abstractmethod
+    def listPlayers(self) -> List[Player]:
+        '''
+        Get a list of all players in game
         '''
         return NotImplemented
     

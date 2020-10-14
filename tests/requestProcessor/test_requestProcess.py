@@ -1,4 +1,4 @@
-from typing import Optional, Set
+from typing import List, Optional, Set
 import pytest
 import os
 import sys
@@ -29,6 +29,9 @@ class HelperGame(AbstractGame):
         if playerData in self._players:
             self._players.remove(playerData)
         return interactions.ResponseSuccess(None, playerData, None, None)
+    
+    def listPlayers(self) -> List[Player]:
+        return list(self._players)
 
 
 def test_creation():
@@ -71,7 +74,7 @@ def test_processJoinGame():
     assert x.playerDatabase.getAllPlayersIDs() == {'player1'}
     p = x.playerDatabase.getPlayer('player1')
 
-    assert gameDB.getGame('game1')._players == {p}
+    assert gameDB.getGame('game1').listPlayers() == [p]
 
     assert resp.isValid
     assert isinstance(resp, interactions.ResponseSuccess)
