@@ -1,4 +1,3 @@
-from typing import Type
 import pytest
 import os
 import sys
@@ -34,8 +33,8 @@ def test_abc1():
             pass
         TestCls()
 
-def test_basic1():
-    d = dataTypes.BasicPlayerManager()
+def helper_playerManager(obj):
+    d = obj
 
     assert d.getAllPlayersIDs() == set()
 
@@ -51,9 +50,11 @@ def test_basic1():
     
     assert d.getPlayer('player2') is None
 
-def test_basic2():
-    d = dataTypes.BasicGameManager()
+def test_basic1():
+    helper_playerManager(dataTypes.BasicPlayerManager())
 
+def helper_gameManger(obj):
+    d = obj
     assert d.getAllGameIDs() == set()
 
     with pytest.raises(Exception):
@@ -71,3 +72,6 @@ def test_basic2():
     assert d.removeGame('g1') is None
     assert d.getAllGameIDs() == set()
     
+def test_basic2():
+    d = dataTypes.BasicGameManager()
+    helper_gameManger(d)

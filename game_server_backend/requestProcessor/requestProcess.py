@@ -26,13 +26,13 @@ class RequestProcessor:
         # if so, join
         if game is None:
             return interactions.ResponseFailure(playerData, 'Game not found in database')
-        elif game.hasGameStarted:
+        elif game.hasGameStarted and not playerData in game.listPlayers():
             return interactions.ResponseFailure(playerData, 'Game has already started')
         
         response = game.joinPlayer(playerData, r.otherData)
         playerData.setGameID(r.gameID)
         if isinstance(response, interactions.Response):
-                return response
+            return response
         else:
             raise TypeError(f'Expected type "{type(interactions.Response)}" but got type "{type(response)}"')
             #interactions.ResponseFailure('Unknown Error')

@@ -6,7 +6,7 @@ a simple chat system
 
 import sys
 import os
-from typing import Optional, Set
+from typing import List, Optional, Set
 sys.path.append(os.path.join(os.curdir, '..'))
 
 from game_server_backend.requestProcessor import dataTypes, game, interactions, RequestProcessor, Player
@@ -35,6 +35,9 @@ class ChatSystem(game.AbstractGame):
             self.__players.remove(playerData)
             return interactions.ResponseSuccess('You left this group', playerData, (list(self.__players), f'{playerData.getPlayerName()} left'))
         return interactions.ResponseSuccess('Already left this group', playerData)
+    
+    def listPlayers(self) -> List[Player]:
+        return list(self.__players)
 
 
 if __name__ == "__main__":
