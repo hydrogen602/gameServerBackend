@@ -39,6 +39,7 @@ class AbstractGame(ABC):
     @abstractmethod
     def joinPlayer(self, playerData: Player, otherRequestData: Optional[str]) -> interactions.Response:
         '''
+        abstractmethod.
         Called when a player wants to join a Game.
         otherRequestData is extra data that can be send by joining players to the game
         '''
@@ -47,6 +48,7 @@ class AbstractGame(ABC):
     @abstractmethod
     def leavePlayer(self, playerData: Player) -> interactions.ResponseSuccess:
         '''
+        abstractmethod.
         Called when a player exits the game.
         If the player doesn't exist, ignore.
         '''
@@ -55,6 +57,7 @@ class AbstractGame(ABC):
     @abstractmethod
     def listPlayers(self) -> List[Player]:
         '''
+        abstractmethod.
         Get a list of all players in game
         '''
         return NotImplemented
@@ -62,6 +65,7 @@ class AbstractGame(ABC):
     @abstractmethod
     def handleRequest(self, playerData: Player, request: str) -> interactions.Response:
         '''
+        abstractmethod.
         Called when a player makes a request or action. The string `request`
         is unmodified from what was received.
         '''

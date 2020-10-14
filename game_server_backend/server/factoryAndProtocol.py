@@ -98,8 +98,8 @@ class _ServerProtocol(WebSocketServerProtocol):
             msg = json.dumps({'token': self.factory.getToken(self)})
             self.sendMessage(msg)
 
-        elif msg == 'history':
-            self.factory.sendHistory(self)
+        # elif msg == 'history':
+        #     self.factory.sendHistory(self)
 
         else:
             self.factory.onMessage(msg, self)

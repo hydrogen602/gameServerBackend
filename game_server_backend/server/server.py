@@ -5,6 +5,19 @@ connection details. The class `Server` is what is used to run the project.
 Required 3rd-party libraries:
 `autobahn`
 `twisted`
+
+Info on connecting to the server:
+The path part of the url should be of the format:
+    /gameID/name/token/...     <- reconnect
+    /gameID/name/null/...      <- first connect
+
+Everything after the fourth slash is ignored by the server code
+and passed directly to the `joinPlayer` method of `AbstractGame`,
+as the otherRequestData argument.
+
+The server also sends the json string {'token': <token> }.
+This token should be kept as it is used to identify the player
+and allow them to rejoin a game if they get disconnected.
 '''
 import sys
 import json

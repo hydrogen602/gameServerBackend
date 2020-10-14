@@ -27,8 +27,10 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from __future__ import annotations
-from typing import Dict, Optional, Set, TYPE_CHECKING
+from typing import Dict, Optional, Set, TYPE_CHECKING, Union
 from abc import ABC, abstractmethod
+# import sqlite3
+# import atexit
 if TYPE_CHECKING:
     from .game import AbstractGame
 
@@ -97,6 +99,7 @@ class PlayerManager(ABC):
     @abstractmethod
     def addPlayer(self, playerId: str) -&gt; Player:
         &#39;&#39;&#39;
+        abstractmethod.
         Add a player with the given name. Throws an exception if the name exists
         &#39;&#39;&#39;
         return NotImplemented
@@ -104,6 +107,7 @@ class PlayerManager(ABC):
     @abstractmethod
     def getPlayer(self, id: str) -&gt; Optional[Player]:
         &#39;&#39;&#39;
+        abstractmethod.
         Get the Player object corresponding with a player name/id.
         Returns None if not found.
         &#39;&#39;&#39;
@@ -112,6 +116,7 @@ class PlayerManager(ABC):
     @abstractmethod
     def getAllPlayersIDs(self) -&gt; Set[str]:
         &#39;&#39;&#39;
+        abstractmethod.
         Get all player names/ids
         &#39;&#39;&#39;
         return NotImplemented
@@ -127,6 +132,7 @@ class GameManager(ABC):
     @abstractmethod
     def getGame(self, id: str) -&gt; Optional[AbstractGame]:
         &#39;&#39;&#39;
+        abstractmethod.
         Get the Game object correspoding to the game id and None if not found.
         &#39;&#39;&#39;
         return NotImplemented
@@ -134,6 +140,7 @@ class GameManager(ABC):
     @abstractmethod
     def addGame(self, id: str, game: AbstractGame):
         &#39;&#39;&#39;
+        abstractmethod.
         Add a game together with its game id.
         &#39;&#39;&#39;
         return NotImplemented
@@ -141,6 +148,7 @@ class GameManager(ABC):
     @abstractmethod
     def removeGame(self, id: str) -&gt; AbstractGame:
         &#39;&#39;&#39;
+        abstractmethod.
         Remove a game. It is not known if this works, so use with caution
         or avoid all together.
         &#39;&#39;&#39;
@@ -149,6 +157,7 @@ class GameManager(ABC):
     @abstractmethod
     def getAllGameIDs(self) -&gt; Set[str]:
         &#39;&#39;&#39;
+        abstractmethod.
         Get all game ids
         &#39;&#39;&#39;
         return NotImplemented
@@ -343,6 +352,7 @@ storage system for the player data.</p></div>
     @abstractmethod
     def getGame(self, id: str) -&gt; Optional[AbstractGame]:
         &#39;&#39;&#39;
+        abstractmethod.
         Get the Game object correspoding to the game id and None if not found.
         &#39;&#39;&#39;
         return NotImplemented
@@ -350,6 +360,7 @@ storage system for the player data.</p></div>
     @abstractmethod
     def addGame(self, id: str, game: AbstractGame):
         &#39;&#39;&#39;
+        abstractmethod.
         Add a game together with its game id.
         &#39;&#39;&#39;
         return NotImplemented
@@ -357,6 +368,7 @@ storage system for the player data.</p></div>
     @abstractmethod
     def removeGame(self, id: str) -&gt; AbstractGame:
         &#39;&#39;&#39;
+        abstractmethod.
         Remove a game. It is not known if this works, so use with caution
         or avoid all together.
         &#39;&#39;&#39;
@@ -365,6 +377,7 @@ storage system for the player data.</p></div>
     @abstractmethod
     def getAllGameIDs(self) -&gt; Set[str]:
         &#39;&#39;&#39;
+        abstractmethod.
         Get all game ids
         &#39;&#39;&#39;
         return NotImplemented</code></pre>
@@ -383,7 +396,8 @@ storage system for the player data.</p></div>
 <span>def <span class="ident">addGame</span></span>(<span>self, id: str, game: AbstractGame)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Add a game together with its game id.</p></div>
+<div class="desc"><p>abstractmethod.
+Add a game together with its game id.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -391,6 +405,7 @@ storage system for the player data.</p></div>
 <pre><code class="python">@abstractmethod
 def addGame(self, id: str, game: AbstractGame):
     &#39;&#39;&#39;
+    abstractmethod.
     Add a game together with its game id.
     &#39;&#39;&#39;
     return NotImplemented</code></pre>
@@ -400,7 +415,8 @@ def addGame(self, id: str, game: AbstractGame):
 <span>def <span class="ident">getAllGameIDs</span></span>(<span>self) ‑> Set[str]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get all game ids</p></div>
+<div class="desc"><p>abstractmethod.
+Get all game ids</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -408,6 +424,7 @@ def addGame(self, id: str, game: AbstractGame):
 <pre><code class="python">@abstractmethod
 def getAllGameIDs(self) -&gt; Set[str]:
     &#39;&#39;&#39;
+    abstractmethod.
     Get all game ids
     &#39;&#39;&#39;
     return NotImplemented</code></pre>
@@ -417,7 +434,8 @@ def getAllGameIDs(self) -&gt; Set[str]:
 <span>def <span class="ident">getGame</span></span>(<span>self, id: str) ‑> Optional[AbstractGame]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get the Game object correspoding to the game id and None if not found.</p></div>
+<div class="desc"><p>abstractmethod.
+Get the Game object correspoding to the game id and None if not found.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -425,6 +443,7 @@ def getAllGameIDs(self) -&gt; Set[str]:
 <pre><code class="python">@abstractmethod
 def getGame(self, id: str) -&gt; Optional[AbstractGame]:
     &#39;&#39;&#39;
+    abstractmethod.
     Get the Game object correspoding to the game id and None if not found.
     &#39;&#39;&#39;
     return NotImplemented</code></pre>
@@ -434,7 +453,8 @@ def getGame(self, id: str) -&gt; Optional[AbstractGame]:
 <span>def <span class="ident">removeGame</span></span>(<span>self, id: str) ‑> AbstractGame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Remove a game. It is not known if this works, so use with caution
+<div class="desc"><p>abstractmethod.
+Remove a game. It is not known if this works, so use with caution
 or avoid all together.</p></div>
 <details class="source">
 <summary>
@@ -443,6 +463,7 @@ or avoid all together.</p></div>
 <pre><code class="python">@abstractmethod
 def removeGame(self, id: str) -&gt; AbstractGame:
     &#39;&#39;&#39;
+    abstractmethod.
     Remove a game. It is not known if this works, so use with caution
     or avoid all together.
     &#39;&#39;&#39;
@@ -593,6 +614,7 @@ storage system for the player data.</p></div>
     @abstractmethod
     def addPlayer(self, playerId: str) -&gt; Player:
         &#39;&#39;&#39;
+        abstractmethod.
         Add a player with the given name. Throws an exception if the name exists
         &#39;&#39;&#39;
         return NotImplemented
@@ -600,6 +622,7 @@ storage system for the player data.</p></div>
     @abstractmethod
     def getPlayer(self, id: str) -&gt; Optional[Player]:
         &#39;&#39;&#39;
+        abstractmethod.
         Get the Player object corresponding with a player name/id.
         Returns None if not found.
         &#39;&#39;&#39;
@@ -608,6 +631,7 @@ storage system for the player data.</p></div>
     @abstractmethod
     def getAllPlayersIDs(self) -&gt; Set[str]:
         &#39;&#39;&#39;
+        abstractmethod.
         Get all player names/ids
         &#39;&#39;&#39;
         return NotImplemented</code></pre>
@@ -626,7 +650,8 @@ storage system for the player data.</p></div>
 <span>def <span class="ident">addPlayer</span></span>(<span>self, playerId: str) ‑> <a title="game_server_backend.requestProcessor.dataTypes.Player" href="#game_server_backend.requestProcessor.dataTypes.Player">Player</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Add a player with the given name. Throws an exception if the name exists</p></div>
+<div class="desc"><p>abstractmethod.
+Add a player with the given name. Throws an exception if the name exists</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -634,6 +659,7 @@ storage system for the player data.</p></div>
 <pre><code class="python">@abstractmethod
 def addPlayer(self, playerId: str) -&gt; Player:
     &#39;&#39;&#39;
+    abstractmethod.
     Add a player with the given name. Throws an exception if the name exists
     &#39;&#39;&#39;
     return NotImplemented</code></pre>
@@ -643,7 +669,8 @@ def addPlayer(self, playerId: str) -&gt; Player:
 <span>def <span class="ident">getAllPlayersIDs</span></span>(<span>self) ‑> Set[str]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get all player names/ids</p></div>
+<div class="desc"><p>abstractmethod.
+Get all player names/ids</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -651,6 +678,7 @@ def addPlayer(self, playerId: str) -&gt; Player:
 <pre><code class="python">@abstractmethod
 def getAllPlayersIDs(self) -&gt; Set[str]:
     &#39;&#39;&#39;
+    abstractmethod.
     Get all player names/ids
     &#39;&#39;&#39;
     return NotImplemented</code></pre>
@@ -660,7 +688,8 @@ def getAllPlayersIDs(self) -&gt; Set[str]:
 <span>def <span class="ident">getPlayer</span></span>(<span>self, id: str) ‑> Union[<a title="game_server_backend.requestProcessor.dataTypes.Player" href="#game_server_backend.requestProcessor.dataTypes.Player">Player</a>, NoneType]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get the Player object corresponding with a player name/id.
+<div class="desc"><p>abstractmethod.
+Get the Player object corresponding with a player name/id.
 Returns None if not found.</p></div>
 <details class="source">
 <summary>
@@ -669,6 +698,7 @@ Returns None if not found.</p></div>
 <pre><code class="python">@abstractmethod
 def getPlayer(self, id: str) -&gt; Optional[Player]:
     &#39;&#39;&#39;
+    abstractmethod.
     Get the Player object corresponding with a player name/id.
     Returns None if not found.
     &#39;&#39;&#39;

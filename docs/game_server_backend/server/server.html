@@ -28,6 +28,18 @@ connection details. The class <code><a title="game_server_backend.server.server.
 <p>Required 3rd-party libraries:
 <code>autobahn</code>
 <code>twisted</code></p>
+<p>Info on connecting to the server:
+The path part of the url should be of the format:
+/gameID/name/token/&hellip;
+&lt;- reconnect
+/gameID/name/null/&hellip;
+&lt;- first connect</p>
+<p>Everything after the fourth slash is ignored by the server code
+and passed directly to the <code>joinPlayer</code> method of <code>AbstractGame</code>,
+as the otherRequestData argument.</p>
+<p>The server also sends the json string {'token': <token> }.
+This token should be kept as it is used to identify the player
+and allow them to rejoin a game if they get disconnected.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -39,6 +51,19 @@ connection details. The class `Server` is what is used to run the project.
 Required 3rd-party libraries:
 `autobahn`
 `twisted`
+
+Info on connecting to the server:
+The path part of the url should be of the format:
+    /gameID/name/token/...     &lt;- reconnect
+    /gameID/name/null/...      &lt;- first connect
+
+Everything after the fourth slash is ignored by the server code
+and passed directly to the `joinPlayer` method of `AbstractGame`,
+as the otherRequestData argument.
+
+The server also sends the json string {&#39;token&#39;: &lt;token&gt; }.
+This token should be kept as it is used to identify the player
+and allow them to rejoin a game if they get disconnected.
 &#39;&#39;&#39;
 import sys
 import json

@@ -28,7 +28,7 @@
 </summary>
 <pre><code class="python">from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import List, Optional
 from .dataTypes import Player
 from . import interactions
 
@@ -67,6 +67,7 @@ class AbstractGame(ABC):
     @abstractmethod
     def joinPlayer(self, playerData: Player, otherRequestData: Optional[str]) -&gt; interactions.Response:
         &#39;&#39;&#39;
+        abstractmethod.
         Called when a player wants to join a Game.
         otherRequestData is extra data that can be send by joining players to the game
         &#39;&#39;&#39;
@@ -75,14 +76,24 @@ class AbstractGame(ABC):
     @abstractmethod
     def leavePlayer(self, playerData: Player) -&gt; interactions.ResponseSuccess:
         &#39;&#39;&#39;
+        abstractmethod.
         Called when a player exits the game.
         If the player doesn&#39;t exist, ignore.
         &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
+    def listPlayers(self) -&gt; List[Player]:
+        &#39;&#39;&#39;
+        abstractmethod.
+        Get a list of all players in game
+        &#39;&#39;&#39;
+        return NotImplemented
+    
+    @abstractmethod
     def handleRequest(self, playerData: Player, request: str) -&gt; interactions.Response:
         &#39;&#39;&#39;
+        abstractmethod.
         Called when a player makes a request or action. The string `request`
         is unmodified from what was received.
         &#39;&#39;&#39;
@@ -146,6 +157,7 @@ the <strong>init</strong> methods of any subclass.</p>
     @abstractmethod
     def joinPlayer(self, playerData: Player, otherRequestData: Optional[str]) -&gt; interactions.Response:
         &#39;&#39;&#39;
+        abstractmethod.
         Called when a player wants to join a Game.
         otherRequestData is extra data that can be send by joining players to the game
         &#39;&#39;&#39;
@@ -154,14 +166,24 @@ the <strong>init</strong> methods of any subclass.</p>
     @abstractmethod
     def leavePlayer(self, playerData: Player) -&gt; interactions.ResponseSuccess:
         &#39;&#39;&#39;
+        abstractmethod.
         Called when a player exits the game.
         If the player doesn&#39;t exist, ignore.
         &#39;&#39;&#39;
         return NotImplemented
     
     @abstractmethod
+    def listPlayers(self) -&gt; List[Player]:
+        &#39;&#39;&#39;
+        abstractmethod.
+        Get a list of all players in game
+        &#39;&#39;&#39;
+        return NotImplemented
+    
+    @abstractmethod
     def handleRequest(self, playerData: Player, request: str) -&gt; interactions.Response:
         &#39;&#39;&#39;
+        abstractmethod.
         Called when a player makes a request or action. The string `request`
         is unmodified from what was received.
         &#39;&#39;&#39;
@@ -195,7 +217,8 @@ def hasGameStarted(self) -&gt; bool:
 <span>def <span class="ident">handleRequest</span></span>(<span>self, playerData: Player, request: str) ‑> <a title="game_server_backend.requestProcessor.interactions.Response" href="interactions.html#game_server_backend.requestProcessor.interactions.Response">Response</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Called when a player makes a request or action. The string <code>request</code>
+<div class="desc"><p>abstractmethod.
+Called when a player makes a request or action. The string <code>request</code>
 is unmodified from what was received.</p></div>
 <details class="source">
 <summary>
@@ -204,6 +227,7 @@ is unmodified from what was received.</p></div>
 <pre><code class="python">@abstractmethod
 def handleRequest(self, playerData: Player, request: str) -&gt; interactions.Response:
     &#39;&#39;&#39;
+    abstractmethod.
     Called when a player makes a request or action. The string `request`
     is unmodified from what was received.
     &#39;&#39;&#39;
@@ -214,7 +238,8 @@ def handleRequest(self, playerData: Player, request: str) -&gt; interactions.Res
 <span>def <span class="ident">joinPlayer</span></span>(<span>self, playerData: Player, otherRequestData: Optional[str]) ‑> <a title="game_server_backend.requestProcessor.interactions.Response" href="interactions.html#game_server_backend.requestProcessor.interactions.Response">Response</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Called when a player wants to join a Game.
+<div class="desc"><p>abstractmethod.
+Called when a player wants to join a Game.
 otherRequestData is extra data that can be send by joining players to the game</p></div>
 <details class="source">
 <summary>
@@ -223,6 +248,7 @@ otherRequestData is extra data that can be send by joining players to the game</
 <pre><code class="python">@abstractmethod
 def joinPlayer(self, playerData: Player, otherRequestData: Optional[str]) -&gt; interactions.Response:
     &#39;&#39;&#39;
+    abstractmethod.
     Called when a player wants to join a Game.
     otherRequestData is extra data that can be send by joining players to the game
     &#39;&#39;&#39;
@@ -233,7 +259,8 @@ def joinPlayer(self, playerData: Player, otherRequestData: Optional[str]) -&gt; 
 <span>def <span class="ident">leavePlayer</span></span>(<span>self, playerData: Player) ‑> <a title="game_server_backend.requestProcessor.interactions.ResponseSuccess" href="interactions.html#game_server_backend.requestProcessor.interactions.ResponseSuccess">ResponseSuccess</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Called when a player exits the game.
+<div class="desc"><p>abstractmethod.
+Called when a player exits the game.
 If the player doesn't exist, ignore.</p></div>
 <details class="source">
 <summary>
@@ -242,8 +269,28 @@ If the player doesn't exist, ignore.</p></div>
 <pre><code class="python">@abstractmethod
 def leavePlayer(self, playerData: Player) -&gt; interactions.ResponseSuccess:
     &#39;&#39;&#39;
+    abstractmethod.
     Called when a player exits the game.
     If the player doesn&#39;t exist, ignore.
+    &#39;&#39;&#39;
+    return NotImplemented</code></pre>
+</details>
+</dd>
+<dt id="game_server_backend.requestProcessor.game.AbstractGame.listPlayers"><code class="name flex">
+<span>def <span class="ident">listPlayers</span></span>(<span>self) ‑> List[<a title="game_server_backend.requestProcessor.dataTypes.Player" href="dataTypes.html#game_server_backend.requestProcessor.dataTypes.Player">Player</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>abstractmethod.
+Get a list of all players in game</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def listPlayers(self) -&gt; List[Player]:
+    &#39;&#39;&#39;
+    abstractmethod.
+    Get a list of all players in game
     &#39;&#39;&#39;
     return NotImplemented</code></pre>
 </details>
@@ -290,11 +337,12 @@ has already started, it throws a ValueError.</p></div>
 <ul>
 <li>
 <h4><code><a title="game_server_backend.requestProcessor.game.AbstractGame" href="#game_server_backend.requestProcessor.game.AbstractGame">AbstractGame</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="game_server_backend.requestProcessor.game.AbstractGame.handleRequest" href="#game_server_backend.requestProcessor.game.AbstractGame.handleRequest">handleRequest</a></code></li>
 <li><code><a title="game_server_backend.requestProcessor.game.AbstractGame.hasGameStarted" href="#game_server_backend.requestProcessor.game.AbstractGame.hasGameStarted">hasGameStarted</a></code></li>
 <li><code><a title="game_server_backend.requestProcessor.game.AbstractGame.joinPlayer" href="#game_server_backend.requestProcessor.game.AbstractGame.joinPlayer">joinPlayer</a></code></li>
 <li><code><a title="game_server_backend.requestProcessor.game.AbstractGame.leavePlayer" href="#game_server_backend.requestProcessor.game.AbstractGame.leavePlayer">leavePlayer</a></code></li>
+<li><code><a title="game_server_backend.requestProcessor.game.AbstractGame.listPlayers" href="#game_server_backend.requestProcessor.game.AbstractGame.listPlayers">listPlayers</a></code></li>
 <li><code><a title="game_server_backend.requestProcessor.game.AbstractGame.startGame" href="#game_server_backend.requestProcessor.game.AbstractGame.startGame">startGame</a></code></li>
 </ul>
 </li>

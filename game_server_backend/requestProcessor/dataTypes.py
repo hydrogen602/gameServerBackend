@@ -71,6 +71,7 @@ class PlayerManager(ABC):
     @abstractmethod
     def addPlayer(self, playerId: str) -> Player:
         '''
+        abstractmethod.
         Add a player with the given name. Throws an exception if the name exists
         '''
         return NotImplemented
@@ -78,6 +79,7 @@ class PlayerManager(ABC):
     @abstractmethod
     def getPlayer(self, id: str) -> Optional[Player]:
         '''
+        abstractmethod.
         Get the Player object corresponding with a player name/id.
         Returns None if not found.
         '''
@@ -86,6 +88,7 @@ class PlayerManager(ABC):
     @abstractmethod
     def getAllPlayersIDs(self) -> Set[str]:
         '''
+        abstractmethod.
         Get all player names/ids
         '''
         return NotImplemented
@@ -101,6 +104,7 @@ class GameManager(ABC):
     @abstractmethod
     def getGame(self, id: str) -> Optional[AbstractGame]:
         '''
+        abstractmethod.
         Get the Game object correspoding to the game id and None if not found.
         '''
         return NotImplemented
@@ -108,6 +112,7 @@ class GameManager(ABC):
     @abstractmethod
     def addGame(self, id: str, game: AbstractGame):
         '''
+        abstractmethod.
         Add a game together with its game id.
         '''
         return NotImplemented
@@ -115,6 +120,7 @@ class GameManager(ABC):
     @abstractmethod
     def removeGame(self, id: str) -> AbstractGame:
         '''
+        abstractmethod.
         Remove a game. It is not known if this works, so use with caution
         or avoid all together.
         '''
@@ -123,6 +129,7 @@ class GameManager(ABC):
     @abstractmethod
     def getAllGameIDs(self) -> Set[str]:
         '''
+        abstractmethod.
         Get all game ids
         '''
         return NotImplemented

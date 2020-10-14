@@ -30,6 +30,9 @@
 from abc import abstractmethod, ABC
 from typing import Dict, Optional, TYPE_CHECKING, Union
 from secrets import token_urlsafe
+import sqlite3
+import atexit
+
 if TYPE_CHECKING:
     from ..requestProcessor.dataTypes import Player
 
@@ -70,6 +73,74 @@ class TokenStorage(ABC):
         return NotImplemented
 
 
+class PersistentTokenStorage(TokenStorage):
+    &#39;&#39;&#39;
+    An implementation for TokenStorage that allows
+    for persistent data storage by using a sqlite database
+    using python&#39;s module sqlite3. It can also be used
+    for an in-memory database if &#39;:memory:&#39; is passed
+    to `__init__` as the dbFileName.
+    &#39;&#39;&#39;
+
+    def __init__(self, dbFileName: str):
+        self.__conn: sqlite3.Connection = sqlite3.connect(dbFileName)
+
+        atexit.register(self.__cleanup)
+
+        self.__cur: sqlite3.Cursor = self.__conn.cursor()
+
+        self.__cur.execute(&#39;&#39;&#39;
+        CREATE TABLE IF NOT EXISTS token_storage (
+            token TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL PRIMARY KEY
+        )
+        &#39;&#39;&#39;)
+        self.__conn.commit()
+
+    def __cleanup(self):
+        self.__conn.close()
+
+    def getPlayerIDbyToken(self, token: str) -&gt; Optional[str]:
+        result = self.__cur.execute(&#39;SELECT name FROM token_storage WHERE token=?&#39;, (token,)).fetchall()
+        if len(result) == 0:
+            return None
+        elif len(result) == 1:
+            return result[0][0]
+        else:
+            raise RuntimeError(&#39;Found token more than once. This should never happen!&#39;)
+
+    def getTokenbyPlayerID(self, playerID: Union[str, Player]) -&gt; Optional[str]:
+        if not isinstance(playerID, str):
+            playerID = playerID.getPlayerName()
+
+        result = self.__cur.execute(&#39;SELECT token FROM token_storage WHERE name=?&#39;, (playerID,)).fetchall()
+        if len(result) == 0:
+            return None
+        elif len(result) == 1:
+            return result[0][0]
+        else:
+            raise RuntimeError(&#39;Found name more than once. This should never happen!&#39;)
+
+    def addPlayerID(self, playerID: Union[str, Player]) -&gt; str:
+        if not isinstance(playerID, str):
+            playerID = playerID.getPlayerName()
+
+        if self.getTokenbyPlayerID(playerID) is not None:
+            raise ValueError(&#39;Player ID taken&#39;)
+
+        token = token_urlsafe(16)
+        while self.getPlayerIDbyToken(token) is not None:
+            token = token_urlsafe(16)
+
+        self.__cur.execute(&#39;&#39;&#39;
+        INSERT INTO token_storage (name, token) VALUES (?, ?)
+        &#39;&#39;&#39;, (playerID, token))
+        self.__conn.commit()
+
+        return token
+
+
+
 class BasicTokenStorage(TokenStorage):
     &#39;&#39;&#39;
     A simple implementation for TokenStorage
@@ -81,15 +152,15 @@ class BasicTokenStorage(TokenStorage):
         self.__tokenBased: Dict[str, str] = {}
         self.__playerIDBased: Dict[str, str] = {}
         self.__maximum: int = maximum
-    
+
     def getPlayerIDbyToken(self, token: str) -&gt; Optional[str]:
         return self.__tokenBased.get(token)
-    
+
     def getTokenbyPlayerID(self, playerID: Union[str, Player]) -&gt; Optional[str]:
         if not isinstance(playerID, str):
             playerID = playerID.getPlayerName()
         return self.__playerIDBased.get(playerID)
-    
+
     def addPlayerID(self, playerID: Union[str, Player]):
         if len(self.__playerIDBased) &gt;= self.__maximum:
             raise RuntimeError(f&#39;Too many players:max is {self.__maximum}&#39;)
@@ -97,19 +168,15 @@ class BasicTokenStorage(TokenStorage):
             playerID = playerID.getPlayerName()
         if playerID in self.__playerIDBased:
             raise ValueError(&#39;Player ID taken&#39;)
-        
+
         token = token_urlsafe(16)
         while token in self.__tokenBased:
             token = token_urlsafe(16)
-        
+
         self.__playerIDBased[playerID] = token
         self.__tokenBased[token] = playerID
 
-        return token
-        
-
-
-    </code></pre>
+        return token</code></pre>
 </details>
 </section>
 <section>
@@ -144,15 +211,15 @@ if a custom implementation is not specified.</p></div>
         self.__tokenBased: Dict[str, str] = {}
         self.__playerIDBased: Dict[str, str] = {}
         self.__maximum: int = maximum
-    
+
     def getPlayerIDbyToken(self, token: str) -&gt; Optional[str]:
         return self.__tokenBased.get(token)
-    
+
     def getTokenbyPlayerID(self, playerID: Union[str, Player]) -&gt; Optional[str]:
         if not isinstance(playerID, str):
             playerID = playerID.getPlayerName()
         return self.__playerIDBased.get(playerID)
-    
+
     def addPlayerID(self, playerID: Union[str, Player]):
         if len(self.__playerIDBased) &gt;= self.__maximum:
             raise RuntimeError(f&#39;Too many players:max is {self.__maximum}&#39;)
@@ -160,13 +227,109 @@ if a custom implementation is not specified.</p></div>
             playerID = playerID.getPlayerName()
         if playerID in self.__playerIDBased:
             raise ValueError(&#39;Player ID taken&#39;)
-        
+
         token = token_urlsafe(16)
         while token in self.__tokenBased:
             token = token_urlsafe(16)
-        
+
         self.__playerIDBased[playerID] = token
         self.__tokenBased[token] = playerID
+
+        return token</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="game_server_backend.server.tokenStorage.TokenStorage" href="#game_server_backend.server.tokenStorage.TokenStorage">TokenStorage</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="game_server_backend.server.tokenStorage.TokenStorage" href="#game_server_backend.server.tokenStorage.TokenStorage">TokenStorage</a></b></code>:
+<ul class="hlist">
+<li><code><a title="game_server_backend.server.tokenStorage.TokenStorage.addPlayerID" href="#game_server_backend.server.tokenStorage.TokenStorage.addPlayerID">addPlayerID</a></code></li>
+<li><code><a title="game_server_backend.server.tokenStorage.TokenStorage.getPlayerIDbyToken" href="#game_server_backend.server.tokenStorage.TokenStorage.getPlayerIDbyToken">getPlayerIDbyToken</a></code></li>
+<li><code><a title="game_server_backend.server.tokenStorage.TokenStorage.getTokenbyPlayerID" href="#game_server_backend.server.tokenStorage.TokenStorage.getTokenbyPlayerID">getTokenbyPlayerID</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="game_server_backend.server.tokenStorage.PersistentTokenStorage"><code class="flex name class">
+<span>class <span class="ident">PersistentTokenStorage</span></span>
+<span>(</span><span>dbFileName: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An implementation for TokenStorage that allows
+for persistent data storage by using a sqlite database
+using python's module sqlite3. It can also be used
+for an in-memory database if ':memory:' is passed
+to <code>__init__</code> as the dbFileName.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PersistentTokenStorage(TokenStorage):
+    &#39;&#39;&#39;
+    An implementation for TokenStorage that allows
+    for persistent data storage by using a sqlite database
+    using python&#39;s module sqlite3. It can also be used
+    for an in-memory database if &#39;:memory:&#39; is passed
+    to `__init__` as the dbFileName.
+    &#39;&#39;&#39;
+
+    def __init__(self, dbFileName: str):
+        self.__conn: sqlite3.Connection = sqlite3.connect(dbFileName)
+
+        atexit.register(self.__cleanup)
+
+        self.__cur: sqlite3.Cursor = self.__conn.cursor()
+
+        self.__cur.execute(&#39;&#39;&#39;
+        CREATE TABLE IF NOT EXISTS token_storage (
+            token TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL PRIMARY KEY
+        )
+        &#39;&#39;&#39;)
+        self.__conn.commit()
+
+    def __cleanup(self):
+        self.__conn.close()
+
+    def getPlayerIDbyToken(self, token: str) -&gt; Optional[str]:
+        result = self.__cur.execute(&#39;SELECT name FROM token_storage WHERE token=?&#39;, (token,)).fetchall()
+        if len(result) == 0:
+            return None
+        elif len(result) == 1:
+            return result[0][0]
+        else:
+            raise RuntimeError(&#39;Found token more than once. This should never happen!&#39;)
+
+    def getTokenbyPlayerID(self, playerID: Union[str, Player]) -&gt; Optional[str]:
+        if not isinstance(playerID, str):
+            playerID = playerID.getPlayerName()
+
+        result = self.__cur.execute(&#39;SELECT token FROM token_storage WHERE name=?&#39;, (playerID,)).fetchall()
+        if len(result) == 0:
+            return None
+        elif len(result) == 1:
+            return result[0][0]
+        else:
+            raise RuntimeError(&#39;Found name more than once. This should never happen!&#39;)
+
+    def addPlayerID(self, playerID: Union[str, Player]) -&gt; str:
+        if not isinstance(playerID, str):
+            playerID = playerID.getPlayerName()
+
+        if self.getTokenbyPlayerID(playerID) is not None:
+            raise ValueError(&#39;Player ID taken&#39;)
+
+        token = token_urlsafe(16)
+        while self.getPlayerIDbyToken(token) is not None:
+            token = token_urlsafe(16)
+
+        self.__cur.execute(&#39;&#39;&#39;
+        INSERT INTO token_storage (name, token) VALUES (?, ?)
+        &#39;&#39;&#39;, (playerID, token))
+        self.__conn.commit()
 
         return token</code></pre>
 </details>
@@ -242,6 +405,7 @@ Note: Player ID and Player name are used interchangeable</p></div>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="game_server_backend.server.tokenStorage.BasicTokenStorage" href="#game_server_backend.server.tokenStorage.BasicTokenStorage">BasicTokenStorage</a></li>
+<li><a title="game_server_backend.server.tokenStorage.PersistentTokenStorage" href="#game_server_backend.server.tokenStorage.PersistentTokenStorage">PersistentTokenStorage</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -324,6 +488,9 @@ def getTokenbyPlayerID(self, playerID: Union[str, Player]) -&gt; Optional[str]:
 <ul>
 <li>
 <h4><code><a title="game_server_backend.server.tokenStorage.BasicTokenStorage" href="#game_server_backend.server.tokenStorage.BasicTokenStorage">BasicTokenStorage</a></code></h4>
+</li>
+<li>
+<h4><code><a title="game_server_backend.server.tokenStorage.PersistentTokenStorage" href="#game_server_backend.server.tokenStorage.PersistentTokenStorage">PersistentTokenStorage</a></code></h4>
 </li>
 <li>
 <h4><code><a title="game_server_backend.server.tokenStorage.TokenStorage" href="#game_server_backend.server.tokenStorage.TokenStorage">TokenStorage</a></code></h4>

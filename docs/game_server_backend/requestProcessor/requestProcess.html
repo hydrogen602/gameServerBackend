@@ -54,13 +54,13 @@ class RequestProcessor:
         # if so, join
         if game is None:
             return interactions.ResponseFailure(playerData, &#39;Game not found in database&#39;)
-        elif game.hasGameStarted:
+        elif game.hasGameStarted and not playerData in game.listPlayers():
             return interactions.ResponseFailure(playerData, &#39;Game has already started&#39;)
         
         response = game.joinPlayer(playerData, r.otherData)
         playerData.setGameID(r.gameID)
         if isinstance(response, interactions.Response):
-                return response
+            return response
         else:
             raise TypeError(f&#39;Expected type &#34;{type(interactions.Response)}&#34; but got type &#34;{type(response)}&#34;&#39;)
             #interactions.ResponseFailure(&#39;Unknown Error&#39;)
@@ -158,13 +158,13 @@ request is send to the right game</p></div>
         # if so, join
         if game is None:
             return interactions.ResponseFailure(playerData, &#39;Game not found in database&#39;)
-        elif game.hasGameStarted:
+        elif game.hasGameStarted and not playerData in game.listPlayers():
             return interactions.ResponseFailure(playerData, &#39;Game has already started&#39;)
         
         response = game.joinPlayer(playerData, r.otherData)
         playerData.setGameID(r.gameID)
         if isinstance(response, interactions.Response):
-                return response
+            return response
         else:
             raise TypeError(f&#39;Expected type &#34;{type(interactions.Response)}&#34; but got type &#34;{type(response)}&#34;&#39;)
             #interactions.ResponseFailure(&#39;Unknown Error&#39;)
