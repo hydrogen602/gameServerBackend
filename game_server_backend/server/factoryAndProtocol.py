@@ -9,6 +9,7 @@ from ..requestProcessor import interactions
 from .tokenStorage import TokenStorage
 
 import json
+import urllib.parse as parse
 from typing import Callable, Dict, List, Optional, Union
 
 from autobahn.twisted.websocket import WebSocketServerProtocol, WebSocketServerFactory # type: ignore
@@ -212,6 +213,8 @@ class _ServerFactory(WebSocketServerFactory):
             gameID = tmpLs[0]
             name = tmpLs[1]
             token = tmpLs[2]
+
+            name = parse.unquote(name)
 
             if len(name) == 0:
                 client.sendClose(code=4000, reason='Name missing')
