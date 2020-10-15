@@ -33,7 +33,7 @@ from ..requestProcessor import interactions, RequestProcessor
 
 class Server:
 
-    def __init__(self, ip: str, port: int, 
+    def __init__(self, ip: Optional[str], port: Optional[int], 
             requestProcessor: RequestProcessor,
             playerTokenStorage: TokenStorage = BasicTokenStorage(),
             config: Optional[Dict[str, object]] = None
@@ -51,10 +51,13 @@ class Server:
         USE_SSL: bool
         verbose: bool
         key: str
-        cert: str
+        cert: str,
+        ip: str,
+        port: int
 
         verbose defaults to False if not found
         key & cert are only needed if USE_SSL==True
+        ip & port are only needed if the respective arguments are None
         '''
         assert isinstance(requestProcessor, RequestProcessor)
         assert isinstance(playerTokenStorage, TokenStorage)
@@ -75,6 +78,35 @@ class Server:
         else:
             verbose = False
         
+        if ip is None:
+            tmp = None
+            if 'IP' in config:
+                tmp = config['IP']
+                if not isinstance(tmp, str):
+                    raise TypeError(f'IP found in config is not a str, but type "{type(tmp)}"')
+
+            elif 'ip' in config:
+                tmp = config['ip']
+                if not isinstance(tmp, str):
+                    raise TypeError(f'IP found in config is not a str, but type "{type(tmp)}"')
+
+            
+            if tmp is None:
+                raise ValueError("IP not given as argument and also not found in config")
+            ip = tmp
+            del tmp
+        
+        if port is None:
+            tmp = None
+            if 'port' in config:
+                tmp = config['port']
+                if not isinstance(tmp, int):
+                    raise TypeError(f'Port number found in config is not an int, but type "{type(tmp)}"')
+
+            if tmp is None:
+                raise ValueError("Port not given as argument and also not found in config")
+            port = tmp
+
 
         regex = r'([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})|localhost'
 

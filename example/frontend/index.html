@@ -33,15 +33,24 @@
         <form>
             <label for="msg">Message </label>
             <input type="text" id="msg">
-            <button onclick="sendMsg()" type="button">Send</button>
+            <button onclick="sendMsg()" type="button" value="submit">Send</button>
         </form>
         <button onclick="disconnect()">Disconnect</button>
         <button onclick="connect()">Reconnect</button>
+
+        <div>
+            <input type="text" id="token" value="null">
+            <button onclick="setToken()">Set Token</button>
+        </div>
 
         <script>
 
             let token = "null";
             let ws = null;
+
+            function setToken() {
+                token = document.getElementById('token').value
+            }
 
             function connect() {
                 let addr = document.getElementById('ipPort').value
@@ -77,6 +86,7 @@
                         if ('token' in obj) {
                             token = obj['token']
                             console.log('got token: ' + token)
+                            document.getElementById('token').value = token
                         }
                     }
                     catch (e) { 

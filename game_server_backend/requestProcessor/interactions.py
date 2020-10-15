@@ -36,7 +36,7 @@ class JoinGameClientRequest(UnprocessedClientRequest):
 
     def __init__(self, playerID: str, gameId: str, otherData: Optional[str]):
         super().__init__(playerID=playerID, request=self.JOIN_GAME)
-        assert gameId is not None
+        assert gameId is not None and playerID is not None
         self.__gameID: str = gameId
         self.__otherData: Optional[str] = otherData
 

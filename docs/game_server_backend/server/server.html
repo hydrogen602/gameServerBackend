@@ -79,7 +79,7 @@ from ..requestProcessor import interactions, RequestProcessor
 
 class Server:
 
-    def __init__(self, ip: str, port: int, 
+    def __init__(self, ip: Optional[str], port: Optional[int], 
             requestProcessor: RequestProcessor,
             playerTokenStorage: TokenStorage = BasicTokenStorage(),
             config: Optional[Dict[str, object]] = None
@@ -97,10 +97,13 @@ class Server:
         USE_SSL: bool
         verbose: bool
         key: str
-        cert: str
+        cert: str,
+        ip: str,
+        port: int
 
         verbose defaults to False if not found
         key &amp; cert are only needed if USE_SSL==True
+        ip &amp; port are only needed if the respective arguments are None
         &#39;&#39;&#39;
         assert isinstance(requestProcessor, RequestProcessor)
         assert isinstance(playerTokenStorage, TokenStorage)
@@ -121,6 +124,35 @@ class Server:
         else:
             verbose = False
         
+        if ip is None:
+            tmp = None
+            if &#39;IP&#39; in config:
+                tmp = config[&#39;IP&#39;]
+                if not isinstance(tmp, str):
+                    raise TypeError(f&#39;IP found in config is not a str, but type &#34;{type(tmp)}&#34;&#39;)
+
+            elif &#39;ip&#39; in config:
+                tmp = config[&#39;ip&#39;]
+                if not isinstance(tmp, str):
+                    raise TypeError(f&#39;IP found in config is not a str, but type &#34;{type(tmp)}&#34;&#39;)
+
+            
+            if tmp is None:
+                raise ValueError(&#34;IP not given as argument and also not found in config&#34;)
+            ip = tmp
+            del tmp
+        
+        if port is None:
+            tmp = None
+            if &#39;port&#39; in config:
+                tmp = config[&#39;port&#39;]
+                if not isinstance(tmp, int):
+                    raise TypeError(f&#39;Port number found in config is not an int, but type &#34;{type(tmp)}&#34;&#39;)
+
+            if tmp is None:
+                raise ValueError(&#34;Port not given as argument and also not found in config&#34;)
+            port = tmp
+
 
         regex = r&#39;([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})|localhost&#39;
 
@@ -217,7 +249,7 @@ class Server:
 <dl>
 <dt id="game_server_backend.server.server.Server"><code class="flex name class">
 <span>class <span class="ident">Server</span></span>
-<span>(</span><span>ip: str, port: int, requestProcessor: <a title="game_server_backend.requestProcessor.requestProcess.RequestProcessor" href="../requestProcessor/requestProcess.html#game_server_backend.requestProcessor.requestProcess.RequestProcessor">RequestProcessor</a>, playerTokenStorage: <a title="game_server_backend.server.tokenStorage.TokenStorage" href="tokenStorage.html#game_server_backend.server.tokenStorage.TokenStorage">TokenStorage</a> = &lt;game_server_backend.server.tokenStorage.BasicTokenStorage object&gt;, config: Union[Dict[str, object], NoneType] = None)</span>
+<span>(</span><span>ip: Union[str, NoneType], port: Union[int, NoneType], requestProcessor: <a title="game_server_backend.requestProcessor.requestProcess.RequestProcessor" href="../requestProcessor/requestProcess.html#game_server_backend.requestProcessor.requestProcess.RequestProcessor">RequestProcessor</a>, playerTokenStorage: <a title="game_server_backend.server.tokenStorage.TokenStorage" href="tokenStorage.html#game_server_backend.server.tokenStorage.TokenStorage">TokenStorage</a> = &lt;game_server_backend.server.tokenStorage.BasicTokenStorage object&gt;, config: Union[Dict[str, object], NoneType] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A class for managing the code for running the server.
@@ -230,16 +262,19 @@ raise an Exception.</p>
 USE_SSL: bool
 verbose: bool
 key: str
-cert: str</p>
+cert: str,
+ip: str,
+port: int</p>
 <p>verbose defaults to False if not found
-key &amp; cert are only needed if USE_SSL==True</p></div>
+key &amp; cert are only needed if USE_SSL==True
+ip &amp; port are only needed if the respective arguments are None</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Server:
 
-    def __init__(self, ip: str, port: int, 
+    def __init__(self, ip: Optional[str], port: Optional[int], 
             requestProcessor: RequestProcessor,
             playerTokenStorage: TokenStorage = BasicTokenStorage(),
             config: Optional[Dict[str, object]] = None
@@ -257,10 +292,13 @@ key &amp; cert are only needed if USE_SSL==True</p></div>
         USE_SSL: bool
         verbose: bool
         key: str
-        cert: str
+        cert: str,
+        ip: str,
+        port: int
 
         verbose defaults to False if not found
         key &amp; cert are only needed if USE_SSL==True
+        ip &amp; port are only needed if the respective arguments are None
         &#39;&#39;&#39;
         assert isinstance(requestProcessor, RequestProcessor)
         assert isinstance(playerTokenStorage, TokenStorage)
@@ -281,6 +319,35 @@ key &amp; cert are only needed if USE_SSL==True</p></div>
         else:
             verbose = False
         
+        if ip is None:
+            tmp = None
+            if &#39;IP&#39; in config:
+                tmp = config[&#39;IP&#39;]
+                if not isinstance(tmp, str):
+                    raise TypeError(f&#39;IP found in config is not a str, but type &#34;{type(tmp)}&#34;&#39;)
+
+            elif &#39;ip&#39; in config:
+                tmp = config[&#39;ip&#39;]
+                if not isinstance(tmp, str):
+                    raise TypeError(f&#39;IP found in config is not a str, but type &#34;{type(tmp)}&#34;&#39;)
+
+            
+            if tmp is None:
+                raise ValueError(&#34;IP not given as argument and also not found in config&#34;)
+            ip = tmp
+            del tmp
+        
+        if port is None:
+            tmp = None
+            if &#39;port&#39; in config:
+                tmp = config[&#39;port&#39;]
+                if not isinstance(tmp, int):
+                    raise TypeError(f&#39;Port number found in config is not an int, but type &#34;{type(tmp)}&#34;&#39;)
+
+            if tmp is None:
+                raise ValueError(&#34;Port not given as argument and also not found in config&#34;)
+            port = tmp
+
 
         regex = r&#39;([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})|localhost&#39;
 

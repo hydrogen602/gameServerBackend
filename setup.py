@@ -3,9 +3,11 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+from game_server_backend import __version__
+
 setuptools.setup(
     name="gameServerBackend",
-    version="0.0.2",
+    version=__version__,
     author="hydrogen602",
     author_email="hydrogen31415@gmail.com",
     description="A framework that interfaces games with websockets",

@@ -321,7 +321,7 @@ class _ServerFactory(WebSocketServerFactory):
                 def requireHelper(x: Optional[str]) -&gt; str:
                     if x is not None:
                         return x
-                    raise RuntimeError(&#39;player id not found. This shouldnt happen&#39;)
+                    raise RuntimeError(&#39;player id not found. This shouldn\&#39;t happen&#39;)
 
                 tokens = [requireHelper(self.__tokenDataStorage.getTokenbyPlayerID(p.getPlayerName())) for p in players]
                 self.broadcastToSome(data, tokens)
@@ -372,6 +372,7 @@ class _ServerFactory(WebSocketServerFactory):
             if token not in self.__connection:
                 self.__backlog[token].append(msg)
             else:
+                if self.__verbose: print(f&#39;Sending {msg} to {token}&#39;)
                 self.__connection[token].sendMessage(encoded)
     
     def broadcastToPlayer(self, msg: str, playerID: str):
@@ -385,6 +386,7 @@ class _ServerFactory(WebSocketServerFactory):
         if token not in self.__connection:
             self.__backlog[token].append(msg)
         else:
+            if self.__verbose: print(f&#39;Sending {msg} to {token}&#39;)
             self.__connection[token].sendMessage(msg)</code></pre>
 </details>
 </section>
