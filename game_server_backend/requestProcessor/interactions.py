@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Dict, List, Optional, TYPE_CHECKING, Tuple
 if TYPE_CHECKING:
-    from game_server_backend.requestProcessor.dataTypes import Player
+    from .dataTypes import Player
 
 
 class UnprocessedClientRequest:
@@ -76,7 +76,7 @@ class ResponseSuccess(Response):
     of all players in the game, as the websocket code
     won't be able to figure it out otherwise
     '''
-    
+
     def __init__(self, dataToSender: Optional[str], sender: Player, dataToAll: Optional[Tuple[List[Player], str]] = None, dataToSome: Optional[Dict[Player, str]] = None):
         self.dataToSender: Optional[str] = dataToSender
         self.dataToAll: Optional[Tuple[List[Player], str]] = dataToAll
@@ -101,3 +101,24 @@ class ResponseFailure(Response):
     @property
     def isValid(self) -> bool:
         return False
+
+
+class TimerResponse:
+    '''
+    Represents the response of a timer-activated event.
+    It differs from other Response objects because it
+    is not player-triggered, and so it has no sender
+    to respond to.
+    Unfortunately, dataToAll needs to be given a list
+    of all players in the game, as the websocket code
+    won't be able to figure it out otherwise
+    '''
+
+    def __init__(self, dataToAll: Optional[Tuple[List[Player], str]] = None, dataToSome: Optional[Dict[Player, str]] = None):
+        self.dataToAll: Optional[Tuple[List[Player], str]] = dataToAll
+        self.dataToSome: Optional[Dict[Player, str]] = dataToSome
+        super().__init__()
+
+    @property
+    def isValid(self) -> bool:
+        return True

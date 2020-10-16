@@ -3,8 +3,7 @@ Internal classes
 '''
 
 from __future__ import annotations
-from game_server_backend.requestProcessor.interactions import Response
-from game_server_backend.requestProcessor.dataTypes import PlayerManager
+from ..requestProcessor.dataTypes import PlayerManager
 from ..requestProcessor import interactions
 from .tokenStorage import TokenStorage
 
@@ -119,7 +118,13 @@ class _ServerFactory(WebSocketServerFactory):
     Keeps track of all connections and relays data to other clients
     '''
 
-    def __init__(self, url: str, f, serverCallback: Callable[[interactions.UnprocessedClientRequest], interactions.Response], tokenDataStorage: TokenStorage, playerDB: PlayerManager, verbose: bool = False):
+    def __init__(self, url: str, 
+                       f, 
+                       serverCallback: Callable[[interactions.UnprocessedClientRequest], interactions.Response], 
+                       tokenDataStorage: TokenStorage, 
+                       playerDB: PlayerManager, 
+                       verbose: bool = False,
+                       printAllOutgoing: bool = False):
         '''
         Initializes the class
         Args:
@@ -143,6 +148,8 @@ class _ServerFactory(WebSocketServerFactory):
         self.__playerDB: PlayerManager = playerDB
 
         self.__verbose: bool = verbose
+
+        self.__printAllOutgoing: bool = printAllOutgoing  # print all outgoing data
 
         WebSocketServerFactory.__init__(self, url)
     
@@ -199,7 +206,6 @@ class _ServerFactory(WebSocketServerFactory):
             #client.sendClose()
             return None
 
-        
         tmp: str = clientTypeRequest.strip()
         tmpLs = tmp.split('/')
         del tmp
@@ -287,7 +293,7 @@ class _ServerFactory(WebSocketServerFactory):
 
         return token
 
-    def __handleResponse(self, res: Response):
+    def __handleResponse(self, res: interactions.Response):
         if isinstance(res, interactions.ResponseSuccess):
             if res.dataToAll:
                 players, data = res.dataToAll
@@ -309,6 +315,20 @@ class _ServerFactory(WebSocketServerFactory):
             log.msg(f"Error: ResponseFailure: {res.errorMsg}")
             errMsg = json.dumps({'ResponseFailure': res.errorMsg})
             self.broadcastToPlayer(errMsg, res.sender.getPlayerName())
+
+    def handleTimerResponse(self, res: interactions.TimerResponse):
+        if res.dataToAll:
+            players, data = res.dataToAll
+            def requireHelper(x: Optional[str]) -> str:
+                    if x is not None:
+                        return x
+                    raise RuntimeError('player id not found. This shouldn\'t happen')
+
+            tokens = [requireHelper(self.__tokenDataStorage.getTokenbyPlayerID(p.getPlayerName())) for p in players]
+            self.broadcastToSome(data, tokens)
+        if res.dataToSome:
+            for player, msg in res.dataToSome.items():
+                self.broadcastToPlayer(msg, playerID=player.getPlayerName())
 
     def deregister(self, client: _ServerProtocol):
         token = client.token
@@ -346,7 +366,7 @@ class _ServerFactory(WebSocketServerFactory):
             if token not in self.__connection:
                 self.__backlog[token].append(msg)
             else:
-                if self.__verbose: print(f'Sending {msg} to {token}')
+                if self.__printAllOutgoing: print(f'Sending {msg} to {token}')
                 self.__connection[token].sendMessage(encoded)
     
     def broadcastToPlayer(self, msg: str, playerID: str):
@@ -360,5 +380,5 @@ class _ServerFactory(WebSocketServerFactory):
         if token not in self.__connection:
             self.__backlog[token].append(msg)
         else:
-            if self.__verbose: print(f'Sending {msg} to {token}')
+            if self.__printAllOutgoing: print(f'Sending {msg} to {token}')
             self.__connection[token].sendMessage(msg)

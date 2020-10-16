@@ -70,3 +70,21 @@ class AbstractGame(ABC):
         is unmodified from what was received.
         '''
         return NotImplemented
+
+
+class AbstractTimeGame(AbstractGame):
+    '''
+    A subclass of AbstractGame.
+    Games that change over time should
+    derive from this class.
+    '''
+
+    @abstractmethod
+    def onTimer(self) -> Optional[interactions.TimerResponse]:
+        '''
+        abstractmethod.
+        Called in regular intervals by the server code.
+        The time between intervals is given as an argument
+        to the server.run method.
+        '''
+        return NotImplemented

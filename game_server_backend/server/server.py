@@ -21,15 +21,17 @@ and allow them to rejoin a game if they get disconnected.
 '''
 import sys
 import json
-from typing import Dict, Optional
+from typing import Callable, Dict, Optional
 import re
 
 from twisted.python import log, logfile # type: ignore
-from twisted.internet import reactor, ssl # type: ignore
+from twisted.internet import reactor, ssl, task # type: ignore
 
 from .factoryAndProtocol import _ServerFactory, _ServerProtocol
 from .tokenStorage import TokenStorage, BasicTokenStorage
 from ..requestProcessor import interactions, RequestProcessor
+from ..requestProcessor.game import AbstractTimeGame
+
 
 class Server:
 
@@ -48,14 +50,16 @@ class Server:
         raise an Exception.
 
         Config options are:
-        USE_SSL: bool
-        verbose: bool
-        key: str
+        USE_SSL: bool,
+        verbose: bool,
+        key: str,
         cert: str,
         ip: str,
-        port: int
+        port: int,
+        printAllOutgoing: bool -> Print all data sent out
 
         verbose defaults to False if not found
+        printAllOutgoing defaults to False if not found
         key & cert are only needed if USE_SSL==True
         ip & port are only needed if the respective arguments are None
         '''
@@ -77,6 +81,14 @@ class Server:
             verbose = tmp
         else:
             verbose = False
+        
+        printAllOutgoing: bool
+        if 'printAllOutgoing' in config:
+            tmp = config['printAllOutgoing']
+            assert isinstance(tmp, bool)
+            printAllOutgoing = tmp
+        else:
+            printAllOutgoing = False
         
         if ip is None:
             tmp = None
@@ -138,7 +150,8 @@ class Server:
             serverCallback=self.callback,
             tokenDataStorage=playerTokenStorage,
             playerDB=self.__requestProcessor.playerDatabase,
-            verbose=verbose
+            verbose=verbose,
+            printAllOutgoing=printAllOutgoing
             )
 
         self.server.protocol = _ServerProtocol
@@ -169,19 +182,54 @@ class Server:
         Handles messages from players
         '''
         return self.__requestProcessor.process(re)
-        
 
-    def run(self, serverLogFilename: str = 'twistedLog.log'):
+    def run(self, serverLogFilename: str = 'twistedLog.log', 
+                  timeout: Optional[float] = None,
+                  callOnTimer: Optional[Callable[[], None]] = None):
         '''
         Run the server. This method will not return
         until the server is ended by an Exception like ^C.
+
+        Timeout is useful when actions need to be triggered
+        on a timer, with timout being a float representing
+        the seconds between calls.
+        If `callOnTimer` is set, it will be called every time
+        the timer triggers. Additionally, any game implementing
+        the `AbstractTimeGame` will have its `onTimer` method
+        be called.
         '''
         log.startLogging(sys.stdout, setStdout=True)
 
         logFile = logfile.LogFile.fromFullPath(serverLogFilename)
         log.addObserver(log.FileLogObserver(logFile).emit)
 
+        if callOnTimer is not None and not callable(callOnTimer):
+            raise TypeError(f'Func specified, but it is not callable: "{type(callOnTimer)}"')
+
+        def loopCall() -> None:
+            if callOnTimer:
+                callOnTimer()
+
+            gDB = self.__requestProcessor.gameDatabase
+            gameIDs = gDB.getAllGameIDs()
+            for gID in gameIDs:
+                game = gDB.getGame(gID)
+                if game and isinstance(game, AbstractTimeGame):
+                    result = game.onTimer()
+                    if result is None:
+                        continue
+                    if isinstance(result, interactions.TimerResponse):
+                        self.server.handleTimerResponse(result)
+                    else:
+                        raise TypeError(f'Method onTimer did not return Optional[ResponseSuccess] but instead "{type(result)}" in game "{type(game)}"')
+
+                        
+
         try:
+            if timeout:
+                loop = task.LoopingCall(loopCall)
+                loop.start(timeout)
+
             # start listening for and handling connections
             reactor.run() # pylint: disable=no-member
         except KeyboardInterrupt:
