@@ -6,6 +6,7 @@ a simple chat system
 
 import sys
 import os
+import time
 from typing import List, Optional, Set
 sys.path.append(os.path.join(os.curdir, '..'))
 
@@ -13,7 +14,7 @@ from game_server_backend.requestProcessor import dataTypes, game, interactions, 
 from game_server_backend.server import Server
 
 
-class ChatSystem(game.AbstractGame):
+class ChatSystem(game.AbstractTimeGame): # AbstractGame
 
     def __init__(self) -> None:
         super().__init__()
@@ -35,9 +36,20 @@ class ChatSystem(game.AbstractGame):
             self.__players.remove(playerData)
             return interactions.ResponseSuccess('You left this group', playerData, (list(self.__players), f'{playerData.getPlayerName()} left'))
         return interactions.ResponseSuccess('Already left this group', playerData)
-    
+
     def listPlayers(self) -> List[Player]:
         return list(self.__players)
+
+    def onTimer(self) -> Optional[interactions.TimerResponse]:
+        return interactions.TimerResponse((list(self.__players), f'The current time is: {time.ctime()}'))
+
+
+lastT: float = 0
+def callout():
+    global lastT
+    t = time.time()
+    print(f'{t - lastT} seconds passed')
+    lastT = t
 
 
 if __name__ == "__main__":
@@ -48,9 +60,9 @@ if __name__ == "__main__":
 
     rp = RequestProcessor(playerDB, gameDB)
 
-    s = Server('localhost', 5000, requestProcessor=rp, config={'USE_SSL': False, 'verbose': True})
+    s = Server('localhost', 5000, requestProcessor=rp, config={'USE_SSL': False, 'verbose': True, 'printAllOutgoing': True})
 
-    s.run()
+    s.run(timeout=5, func=callout) # 
 
 '''
 Testing code

@@ -16,8 +16,8 @@ class RequestProcessor:
     '''
 
     def __init__(self, playerDatabase: PlayerManager, gameDatabase: GameManager) -> None:
-        self.playerDatabase = playerDatabase
-        self.gameDatabase = gameDatabase
+        self.playerDatabase: PlayerManager = playerDatabase
+        self.gameDatabase: GameManager = gameDatabase
         super().__init__()
     
     def __joinRequestProcess(self, playerData: Player, r: interactions.JoinGameClientRequest) -> interactions.Response:        
@@ -28,7 +28,7 @@ class RequestProcessor:
             return interactions.ResponseFailure(playerData, 'Game not found in database')
         elif game.hasGameStarted and not playerData in game.listPlayers():
             return interactions.ResponseFailure(playerData, 'Game has already started')
-        
+
         response = game.joinPlayer(playerData, r.otherData)
         playerData.setGameID(r.gameID)
         if isinstance(response, interactions.Response):
@@ -74,7 +74,7 @@ class RequestProcessor:
         playerData = self.playerDatabase.getPlayer(r.playerID)
         if playerData is None:
             playerData = self.playerDatabase.addPlayer(r.playerID)
-        
+
         # now we get r.playerID and playerData
 
         if isinstance(r, interactions.JoinGameClientRequest):
