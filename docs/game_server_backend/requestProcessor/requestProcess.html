@@ -44,8 +44,8 @@ class RequestProcessor:
     &#39;&#39;&#39;
 
     def __init__(self, playerDatabase: PlayerManager, gameDatabase: GameManager) -&gt; None:
-        self.playerDatabase = playerDatabase
-        self.gameDatabase = gameDatabase
+        self.playerDatabase: PlayerManager = playerDatabase
+        self.gameDatabase: GameManager = gameDatabase
         super().__init__()
     
     def __joinRequestProcess(self, playerData: Player, r: interactions.JoinGameClientRequest) -&gt; interactions.Response:        
@@ -56,7 +56,7 @@ class RequestProcessor:
             return interactions.ResponseFailure(playerData, &#39;Game not found in database&#39;)
         elif game.hasGameStarted and not playerData in game.listPlayers():
             return interactions.ResponseFailure(playerData, &#39;Game has already started&#39;)
-        
+
         response = game.joinPlayer(playerData, r.otherData)
         playerData.setGameID(r.gameID)
         if isinstance(response, interactions.Response):
@@ -102,7 +102,7 @@ class RequestProcessor:
         playerData = self.playerDatabase.getPlayer(r.playerID)
         if playerData is None:
             playerData = self.playerDatabase.addPlayer(r.playerID)
-        
+
         # now we get r.playerID and playerData
 
         if isinstance(r, interactions.JoinGameClientRequest):
@@ -148,8 +148,8 @@ request is send to the right game</p></div>
     &#39;&#39;&#39;
 
     def __init__(self, playerDatabase: PlayerManager, gameDatabase: GameManager) -&gt; None:
-        self.playerDatabase = playerDatabase
-        self.gameDatabase = gameDatabase
+        self.playerDatabase: PlayerManager = playerDatabase
+        self.gameDatabase: GameManager = gameDatabase
         super().__init__()
     
     def __joinRequestProcess(self, playerData: Player, r: interactions.JoinGameClientRequest) -&gt; interactions.Response:        
@@ -160,7 +160,7 @@ request is send to the right game</p></div>
             return interactions.ResponseFailure(playerData, &#39;Game not found in database&#39;)
         elif game.hasGameStarted and not playerData in game.listPlayers():
             return interactions.ResponseFailure(playerData, &#39;Game has already started&#39;)
-        
+
         response = game.joinPlayer(playerData, r.otherData)
         playerData.setGameID(r.gameID)
         if isinstance(response, interactions.Response):
@@ -206,7 +206,7 @@ request is send to the right game</p></div>
         playerData = self.playerDatabase.getPlayer(r.playerID)
         if playerData is None:
             playerData = self.playerDatabase.addPlayer(r.playerID)
-        
+
         # now we get r.playerID and playerData
 
         if isinstance(r, interactions.JoinGameClientRequest):
@@ -238,7 +238,7 @@ it to the Server code.</p></div>
     playerData = self.playerDatabase.getPlayer(r.playerID)
     if playerData is None:
         playerData = self.playerDatabase.addPlayer(r.playerID)
-    
+
     # now we get r.playerID and playerData
 
     if isinstance(r, interactions.JoinGameClientRequest):

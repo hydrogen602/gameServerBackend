@@ -29,7 +29,7 @@
 <pre><code class="python">from __future__ import annotations
 from typing import Dict, List, Optional, TYPE_CHECKING, Tuple
 if TYPE_CHECKING:
-    from game_server_backend.requestProcessor.dataTypes import Player
+    from .dataTypes import Player
 
 
 class UnprocessedClientRequest:
@@ -104,7 +104,7 @@ class ResponseSuccess(Response):
     of all players in the game, as the websocket code
     won&#39;t be able to figure it out otherwise
     &#39;&#39;&#39;
-    
+
     def __init__(self, dataToSender: Optional[str], sender: Player, dataToAll: Optional[Tuple[List[Player], str]] = None, dataToSome: Optional[Dict[Player, str]] = None):
         self.dataToSender: Optional[str] = dataToSender
         self.dataToAll: Optional[Tuple[List[Player], str]] = dataToAll
@@ -128,7 +128,28 @@ class ResponseFailure(Response):
 
     @property
     def isValid(self) -&gt; bool:
-        return False</code></pre>
+        return False
+
+
+class TimerResponse:
+    &#39;&#39;&#39;
+    Represents the response of a timer-activated event.
+    It differs from other Response objects because it
+    is not player-triggered, and so it has no sender
+    to respond to.
+    Unfortunately, dataToAll needs to be given a list
+    of all players in the game, as the websocket code
+    won&#39;t be able to figure it out otherwise
+    &#39;&#39;&#39;
+
+    def __init__(self, dataToAll: Optional[Tuple[List[Player], str]] = None, dataToSome: Optional[Dict[Player, str]] = None):
+        self.dataToAll: Optional[Tuple[List[Player], str]] = dataToAll
+        self.dataToSome: Optional[Dict[Player, str]] = dataToSome
+        super().__init__()
+
+    @property
+    def isValid(self) -&gt; bool:
+        return True</code></pre>
 </details>
 </section>
 <section>
@@ -319,7 +340,7 @@ won't be able to figure it out otherwise</p></div>
     of all players in the game, as the websocket code
     won&#39;t be able to figure it out otherwise
     &#39;&#39;&#39;
-    
+
     def __init__(self, dataToSender: Optional[str], sender: Player, dataToAll: Optional[Tuple[List[Player], str]] = None, dataToSome: Optional[Dict[Player, str]] = None):
         self.dataToSender: Optional[str] = dataToSender
         self.dataToAll: Optional[Tuple[List[Player], str]] = dataToAll
@@ -337,6 +358,58 @@ won't be able to figure it out otherwise</p></div>
 <h3>Instance variables</h3>
 <dl>
 <dt id="game_server_backend.requestProcessor.interactions.ResponseSuccess.isValid"><code class="name">var <span class="ident">isValid</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def isValid(self) -&gt; bool:
+    return True</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="game_server_backend.requestProcessor.interactions.TimerResponse"><code class="flex name class">
+<span>class <span class="ident">TimerResponse</span></span>
+<span>(</span><span>dataToAll: Optional[Tuple[List[Player], str]] = None, dataToSome: Optional[Dict[Player, str]] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents the response of a timer-activated event.
+It differs from other Response objects because it
+is not player-triggered, and so it has no sender
+to respond to.
+Unfortunately, dataToAll needs to be given a list
+of all players in the game, as the websocket code
+won't be able to figure it out otherwise</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TimerResponse:
+    &#39;&#39;&#39;
+    Represents the response of a timer-activated event.
+    It differs from other Response objects because it
+    is not player-triggered, and so it has no sender
+    to respond to.
+    Unfortunately, dataToAll needs to be given a list
+    of all players in the game, as the websocket code
+    won&#39;t be able to figure it out otherwise
+    &#39;&#39;&#39;
+
+    def __init__(self, dataToAll: Optional[Tuple[List[Player], str]] = None, dataToSome: Optional[Dict[Player, str]] = None):
+        self.dataToAll: Optional[Tuple[List[Player], str]] = dataToAll
+        self.dataToSome: Optional[Dict[Player, str]] = dataToSome
+        super().__init__()
+
+    @property
+    def isValid(self) -&gt; bool:
+        return True</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="game_server_backend.requestProcessor.interactions.TimerResponse.isValid"><code class="name">var <span class="ident">isValid</span> : bool</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -464,6 +537,12 @@ def request(self) -&gt; Optional[str]:
 <h4><code><a title="game_server_backend.requestProcessor.interactions.ResponseSuccess" href="#game_server_backend.requestProcessor.interactions.ResponseSuccess">ResponseSuccess</a></code></h4>
 <ul class="">
 <li><code><a title="game_server_backend.requestProcessor.interactions.ResponseSuccess.isValid" href="#game_server_backend.requestProcessor.interactions.ResponseSuccess.isValid">isValid</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="game_server_backend.requestProcessor.interactions.TimerResponse" href="#game_server_backend.requestProcessor.interactions.TimerResponse">TimerResponse</a></code></h4>
+<ul class="">
+<li><code><a title="game_server_backend.requestProcessor.interactions.TimerResponse.isValid" href="#game_server_backend.requestProcessor.interactions.TimerResponse.isValid">isValid</a></code></li>
 </ul>
 </li>
 <li>
